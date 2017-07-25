@@ -1,0 +1,36 @@
+Suit = Enum('Clubs', 'Diamonds', 'Hearts', 'Spades', 'Joker')
+Rank = Enum('King', 'Queen', 'Jack', '10', '9', '8', '7', '6', '5', '4', '3', '2', 'Ace')
+
+class Card
+    (Suit) suit             # unfortunately Jokers necessarily have a rank, which is deceptive
+    (Rank) rank
+
+class Player
+    (str) name
+
+class Team
+    ([Player]) players      # array of (probably exclusively) 2 players
+    (int) score
+
+class Bid
+    (Player) player         # player who made the bid
+    (int) value             # e.g. 8
+    (Suit) suit             # e.g. hearts (I guess null is no trumps)
+
+class Kitty
+    ([ Card ]) cards        # array of 3 cards
+
+class Trick
+    (Player) leader         # player who leadsfive-
+    ([ Card ]) cards        # array of cards in play order
+
+class Hand
+    (Player) dealer         # player who dealt the hand
+    ({ Player: [ Card ] })  # dictionary of hands of cards
+    (Kitty) kitty
+    ([ Bid ]) bids          # array of bids made
+    ([ Trick ]) tricks      # array of tricks played
+
+class Game
+    ([ Team ]) teams        # array of (probably exclusively) 2 teams
+    ([ Hands ]) hands       # array of hands played
