@@ -30,19 +30,3 @@ class FiveHundredGame:
 	def __init__(self, teams):
 		self.teams = teams
 		self.hands = []
-
-
-###################################################
-
-
-normal_card = Card('SPADES', 'FIVE')
-print(str(normal_card))
-print(normal_card.minimal_str())
-
-joker_card = Card('JOKER', 'ACE')
-print(str(joker_card))
-print(joker_card.minimal_str())
-
-wtf_card2 = Card('asdasdadad', 'ACE')
-print(str(wtf_card2))
-print(wtf_card2.minimal_str())
