@@ -1,171 +1,5 @@
 import random
 
-class CardSuit:
-	suits = ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES', 'JOKER']
-
-	def __init__(self, suit):
-		suit = suit.upper()
-
-		if not suit in CardSuit.suits:
-			raise ValueError(f'"{suit}" is not a valid card suit')
-		else:
-			self.suit = suit
-
-	def to_string(self):
-		return self.suit.title()
-
-	def to_minimal_string(self):
-		return self.suit[0].upper()
-
-	def __str__(self):
-		return self.to_string()
-
-	def __eq__(self, other):
-		# Suit to Suit comparison - e.g. suit == other_suit
-		if type(other) is CardSuit or type(other) is BidSuit:
-			return self.suit == other.suit
-
-		# Suit to string comparison - e.g. suit == "HEARTS"
-		if type(other) is str:
-			return self.suit == other.upper()
-
-		return False
-
-class CardRank:
-	ranks = ['ACE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING']
-
-	def __init__(self, rank):
-		rank = rank.upper()
-
-		if not rank in CardRank.ranks:
-			raise ValueError(f'"{rank}" is not a valid card rank')
-		else:
-			self.rank = rank
-
-	def to_string(self):
-		return self.rank.title()
-
-	def to_minimal_string(self):
-		return self.rank[0].upper()
-
-	def __str__(self):
-		return self.to_string()
-
-	def __eq__(self, other):
-		# Rank to Rank comparison - e.g. rank == other_rank
-		if type(other) is CardRank:
-			return self.rank == other.rank
-
-		# Rank to string comparison - e.g. rank == "QUEEN"
-		if type(other) is str:
-			return self.rank == other
-
-		return False
-
-class BidSuit:
-	suits = ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES', 'NO_TRUMPS', 'MISERE', 'OPEN_MISERE', 'PASS']
-
-	def __init__(self, suit):
-		suit = suit.upper()
-
-		if not suit in BidSuit.suits:
-			raise ValueError(f'"{suit}" is not a valid bid suit')
-		else:
-			self.suit = suit
-
-	def to_string(self):
-		return self.suit.replace('_', ' ').title()
-
-	def to_minimal_string(self):
-		return self.suit[0].upper()
-
-	def __str__(self):
-		return self.to_string()
-
-	def __eq__(self, other):
-		# Suit to Suit comparison - e.g. suit == other_suit
-		if type(other) is BidSuit or type(other) is CardSuit:
-			return self.suit == other.suit
-
-		# Suit to string comparison - e.g. suit == "HEARTS"
-		if type(other) is str:
-			return self.suit == other.upper()
-
-		return False
-
-class BidValue:
-	values = [6, 7, 8, 9, 10]
-
-	def __init__(self, value):
-		if not value in BidValue.values:
-			raise ValueError(f'"{value}" is not a valid bid value')
-		else:
-			self.value = value
-
-	def to_string(self):
-		return str(self.value)
-
-	def to_minimal_string(self):
-		return self.to_string()
-
-	def __str__(self):
-		return self.to_string()
-
-	def __eq__(self, other):
-		# Bid to Bid comparison - e.g. value == other_value
-		if type(other) is BidValue:
-			return self.value == other.value
-
-		# Bid to int comparison - e.g. value == 8
-		if type(other) is int:
-			return self.value == other
-
-		return False
-
-class Card:
-	def __init__(self, suit, rank):
-		self.suit = suit
-		self.rank = rank
-
-	def to_string(self):
-		return str(self.rank) + ' of ' + str(self.suit)
-
-	def to_minimal_str(self):
-		return self.rank.to_minimal_str() + self.suit.to_minimal_str()
-
-	def __str__(self):
-		return self.to_string()
-
-class Deck:
-	def __init__(self):
-		self.cards = []
-		self.new_deck()
-
-	def new_deck(self):
-		self.cards = []
-
-		# # Generate full deck
-		# for suit in list(Suits).remove(Suit.JOKER):
-		# 	for rank in Ranks:
-		# 		self.cards.append(Card(suit, rank))
-		#
-		# # Add Joker
-		# self.cards.append(Card(Suit.JOKER, None))
-		#
-		# # Remove unused cards
-		# def is_unused(card):
-		# 	return card.rank in { Rank.TWO, Rank.THREE } or card.rank == Rank.FOUR and card.suit in { Suit.CLUBS, Suit.SPADES }
-		# self.cards = [ card for card in self.cards if not is_unused(card) ]
-
-	def shuffle(self):
-		random.shuffle(self.cards)
-
-	def draw_card(self):
-		index = random.randint(0, len(self.cards) - 1)
-		card = self.cards[index]
-		del self.cards[index]
-		return card
-
 class Player:
 	def __init__(self, name):
 		self.name = name
@@ -174,12 +8,6 @@ class Team:
 	def __init__(self, players):
 		self.players = players
 		self.score = 0
-
-class Bid:
-	def __init__(self, player, value, suit):
-		self.player = player
-		self.value = value
-		self.suit = suit
 
 class Kitty:
 	def __init__(self, cards):
@@ -198,7 +26,7 @@ class Hand:
 		self.bids = []
 		self.tricks = []
 
-class Game:
+class FiveHundredGame:
 	def __init__(self, teams):
 		self.teams = teams
 		self.hands = []
