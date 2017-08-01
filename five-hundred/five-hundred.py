@@ -20,6 +20,17 @@ class CardSuit:
 	def __str__(self):
 		return self.to_string()
 
+	def __eq__(self, other):
+		# Suit to Suit comparison - e.g. suit == other_suit
+		if type(other) is CardSuit or type(other) is BidSuit:
+			return self.suit == other.suit
+
+		# Suit to string comparison - e.g. suit == "HEARTS"
+		if type(other) is str:
+			return self.suit == other.upper()
+
+		return False
+
 class CardRank:
 	ranks = ['ACE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING']
 
@@ -40,11 +51,22 @@ class CardRank:
 	def __str__(self):
 		return self.to_string()
 
+	def __eq__(self, other):
+		# Rank to Rank comparison - e.g. rank == other_rank
+		if type(other) is CardRank:
+			return self.rank == other.rank
+
+		# Rank to string comparison - e.g. rank == "QUEEN"
+		if type(other) is str:
+			return self.rank == other
+
+		return False
+
 class BidSuit:
 	suits = ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES', 'NO_TRUMPS', 'MISERE', 'OPEN_MISERE', 'PASS']
 
 	def __init__(self, suit):
-		suit = suit.upper().replace(' ', '_')
+		suit = suit.upper()
 
 		if not suit in BidSuit.suits:
 			raise ValueError(f'"{suit}" is not a valid bid suit')
@@ -59,6 +81,17 @@ class BidSuit:
 
 	def __str__(self):
 		return self.to_string()
+
+	def __eq__(self, other):
+		# Suit to Suit comparison - e.g. suit == other_suit
+		if type(other) is BidSuit or type(other) is CardSuit:
+			return self.suit == other.suit
+
+		# Suit to string comparison - e.g. suit == "HEARTS"
+		if type(other) is str:
+			return self.suit == other.upper()
+
+		return False
 
 class BidValue:
 	values = [6, 7, 8, 9, 10]
@@ -77,6 +110,17 @@ class BidValue:
 
 	def __str__(self):
 		return self.to_string()
+
+	def __eq__(self, other):
+		# Bid to Bid comparison - e.g. value == other_value
+		if type(other) is BidValue:
+			return self.value == other.value
+
+		# Bid to int comparison - e.g. value == 8
+		if type(other) is int:
+			return self.value == other
+
+		return False
 
 class Card:
 	def __init__(self, suit, rank):
