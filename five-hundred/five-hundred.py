@@ -12,6 +12,7 @@ class Team:
 class Kitty:
 	def __init__(self, cards):
 		self.cards = cards
+		self.collected = False
 
 class Trick:
 	def __init__(self, leader, cards):

@@ -1,3 +1,5 @@
+from card import CardRank, CardSuit, Card
+
 class Deck:
 	def __init__(self):
 		self.cards = []
@@ -6,18 +8,16 @@ class Deck:
 	def new_deck(self):
 		self.cards = []
 
-		# # Generate full deck
-		# for suit in list(Suits).remove(Suit.JOKER):
-		# 	for rank in Ranks:
-		# 		self.cards.append(Card(suit, rank))
-		#
-		# # Add Joker
-		# self.cards.append(Card(Suit.JOKER, None))
-		#
-		# # Remove unused cards
-		# def is_unused(card):
-		# 	return card.rank in { Rank.TWO, Rank.THREE } or card.rank == Rank.FOUR and card.suit in { Suit.CLUBS, Suit.SPADES }
-		# self.cards = [ card for card in self.cards if not is_unused(card) ]
+		# Generate full deck
+		for rank in CardRank.ranks:
+			for suit in [suit for suit in CardSuit.suits if suit != 'JOKER']:
+				self.cards.append(Card(rank, suit))
+
+		# Add Joker
+		self.cards.append(Card('JOKER', None))
+
+		# Remove unused cards
+		self.cards = filter(lamba card: not card.rank in { 'TWO', 'THREE' } and not (card.rank == "FOUR" and card.suit in { 'CLUBS', 'SPADES' }), self.cards)
 
 	def shuffle(self):
 		random.shuffle(self.cards)
