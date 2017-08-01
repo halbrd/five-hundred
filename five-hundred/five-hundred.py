@@ -66,6 +66,8 @@ class BidValue:
 	def __init__(self, value):
 		if not value in BidValue.values:
 			raise ValueError(f'"{value}" is not a valid bid value')
+		else:
+			self.value = value
 
 	def to_string(self):
 		return str(self.value)
