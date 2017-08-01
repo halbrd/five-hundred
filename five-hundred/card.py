@@ -66,10 +66,13 @@ class Card:
 		self.rank = rank
 
 	def to_string(self):
-		return str(self.rank) + ' of ' + str(self.suit)
+        return f'{self.rank} of {self.suit}'
 
-	def to_minimal_str(self):
+	def to_minimal_string(self):
 		return self.rank.to_minimal_str() + self.suit.to_minimal_str()
 
 	def __str__(self):
 		return self.to_string()
+
+    def __eq__(self, other):
+        return type(other) == Card and self.suit == other.suit and self.rank == other.rank
