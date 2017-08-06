@@ -74,5 +74,5 @@ class Card:
 	def __str__(self):
 		return self.to_string()
 
-		def __eq__(self, other):
-		return type(other) == Card and self.suit == other.suit and self.rank == other.rank
+	def __eq__(self, other):
+	return type(other) == Card and self.suit == other.suit and self.rank == other.rank

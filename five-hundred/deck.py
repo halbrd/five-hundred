@@ -1,9 +1,10 @@
-from card import CardRank, CardSuit, Card
+from card import *
 
 class Deck:
-	def __init__(self):
+	def __init__(self, initialize=True):
 		self.cards = []
-		self.new_deck()
+		if initialize:
+			self.new_deck()
 
 	def new_deck(self):
 		self.cards = []
