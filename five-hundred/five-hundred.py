@@ -1,8 +1,8 @@
-import random
+from account import *
 
 class Player:
-	def __init__(self, name):
-		self.name = name
+	def __init__(self, account):
+		self.account = account
 
 class Team:
 	def __init__(self, players):
