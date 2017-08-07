@@ -19,6 +19,12 @@ class Trick:
 		self.leader = leader
 		self.cards = []
 
+	def winner(self):
+		pass
+
+	def value(self):
+		pass
+
 class Hand:
 	def __init__(self, dealer, hands, kitty):
 		self.dealer = dealer
