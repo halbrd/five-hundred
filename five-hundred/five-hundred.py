@@ -1,4 +1,5 @@
 from account import *
+from bid import Bid
 
 class Player:
 	def __init__(self, account):
