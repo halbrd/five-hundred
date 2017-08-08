@@ -120,7 +120,7 @@ FiveHundredGame:
 				...
 				Tricks: [
 					Trick:
-						Leader: <player> # TODO: check if this is redundant - is the leader of the trick the winner of the last one or the leader for the entire hand?
+						Leader: <player>
 						Cards: [ array of 4 cards ]
 				]
 		...
