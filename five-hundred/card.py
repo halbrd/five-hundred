@@ -6,8 +6,8 @@ class CardRank:
 
 		if not rank in CardRank.ranks:
 			raise ValueError(f'"{rank}" is not a valid card rank')
-		else:
-			self.rank = rank
+
+		self.rank = rank
 
 	def to_string(self):
 		return self.rank.title()
