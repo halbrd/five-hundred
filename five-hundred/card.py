@@ -2,6 +2,9 @@ class CardRank:
 	ranks = ['ACE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING']
 
 	def __init__(self, rank):
+		if not type(rank) == str:
+			raise ValueError('CardRank argument must be a string')
+
 		rank = rank.upper()
 
 		if not rank in CardRank.ranks:
@@ -33,6 +36,9 @@ class CardSuit:
 	suits = ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES', 'JOKER']
 
 	def __init__(self, suit):
+		if not type(suit) == str:
+			raise ValueError('CardSuit argument must be a string')
+
 		suit = suit.upper()
 
 		if not suit in CardSuit.suits:
@@ -75,4 +81,4 @@ class Card:
 		return self.to_string()
 
 	def __eq__(self, other):
-	return type(other) == Card and self.suit == other.suit and self.rank == other.rank
+		return type(other) == Card and self.suit == other.suit and self.rank == other.rank

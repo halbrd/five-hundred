@@ -20,7 +20,7 @@ class Deck:
 		deck.append(Card('JOKER', None))
 
 		# Remove unused cards
-		deck = filter(lamba card: not card.rank in { 'TWO', 'THREE' } and not (card.rank == "FOUR" and card.suit in { 'CLUBS', 'SPADES' }), deck)
+		deck = filter(lambda card: not card.rank in { 'TWO', 'THREE' } and not (card.rank == "FOUR" and card.suit in { 'CLUBS', 'SPADES' }), deck)
 
 		# Update self.cards - this step is performed at the end to preserve atomicity
 		self.cards = deck

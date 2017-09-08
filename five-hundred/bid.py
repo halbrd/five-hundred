@@ -2,6 +2,9 @@ class BidValue:
 	values = [6, 7, 8, 9, 10]
 
 	def __init__(self, value):
+		if not type(value) == int:
+			raise ValueError('BidValue argument must be an integer')
+
 		if not value in BidValue.values:
 			raise ValueError(f'"{value}" is not a valid bid value')
 
@@ -31,6 +34,9 @@ class BidSuit:
 	suits = ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES', 'NO_TRUMPS', 'MISERE', 'OPEN_MISERE', 'PASS']
 
 	def __init__(self, suit):
+		if not type(suit) == str:
+			raise ValueError('BidSuit argument must be a string')
+
 		suit = suit.upper()
 
 		if not suit in BidSuit.suits:
