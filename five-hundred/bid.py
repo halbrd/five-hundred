@@ -1,9 +1,9 @@
 class BidValue:
-	values = [6, 7, 8, 9, 10]
+	values = ['6', '7', '8', '9', '10']
 
 	def __init__(self, value):
-		if not type(value) == int:
-			raise ValueError('BidValue argument must be an integer')
+		if type(value) == int:
+			value = str(value)
 
 		if not value in BidValue.values:
 			raise ValueError(f'"{value}" is not a valid bid value')
