@@ -24,9 +24,13 @@ class BidValue:
 		if type(other) is BidValue:
 			return self.value == other.value
 
+		# Bid to str comparison - e.g. value == '8'
+		if type(other) is str:
+			return self.value == other
+
 		# Bid to int comparison - e.g. value == 8
 		if type(other) is int:
-			return self.value == other
+			return int(self.value) == other
 
 		return False
 
