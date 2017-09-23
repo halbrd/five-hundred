@@ -21,6 +21,9 @@ class CardRank:
 	def __str__(self):
 		return self.to_string()
 
+	def __repr__(self):
+		return f'CardRank({self.rank})'
+
 	def __eq__(self, other):
 		# Rank to Rank comparison - e.g. rank == other_rank
 		if type(other) is CardRank:
@@ -43,8 +46,8 @@ class CardSuit:
 
 		if not suit in CardSuit.suits:
 			raise ValueError(f'"{suit}" is not a valid card suit')
-		else:
-			self.suit = suit
+
+		self.suit = suit
 
 	def to_string(self):
 		return self.suit.title()
@@ -54,6 +57,9 @@ class CardSuit:
 
 	def __str__(self):
 		return self.to_string()
+
+	def __repr__(self):
+		return f'CardSuit({self.suit})'
 
 	def __eq__(self, other):
 		# Suit to Suit comparison - e.g. suit == other_suit
@@ -79,6 +85,9 @@ class Card:
 
 	def __str__(self):
 		return self.to_string()
+
+	def __repr__(self):
+		return f'Card({self.rank.rank} {self.suit.suit})'
 
 	def __eq__(self, other):
 		return type(other) == Card and self.suit == other.suit and self.rank == other.rank

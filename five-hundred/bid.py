@@ -19,6 +19,9 @@ class BidValue:
 	def __str__(self):
 		return self.to_string()
 
+	def __repr__(self):
+		return f'BidValue({self.value})'
+
 	def __eq__(self, other):
 		# Bid to Bid comparison - e.g. value == other_value
 		if type(other) is BidValue:
@@ -57,6 +60,9 @@ class BidSuit:
 	def __str__(self):
 		return self.to_string()
 
+	def __repr__(self):
+		return f'BidSuit({self.suit})'
+
 	def __eq__(self, other):
 		# Suit to Suit comparison - e.g. suit == other_suit
 		if type(other) is BidSuit or type(other) is CardSuit:
@@ -76,9 +82,9 @@ class Bid:
 
 	def to_string(self):
 		if self.suit in ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES', 'NO_TRUMPS']:
-			return f'{self.value} {self.suit}'
+			return f'{self.player}: {self.value} {self.suit}'
 		else:
-			return str(self.suit)
+			return f'{self.player}: {self.suit}'
 
 	def to_minimal_string(self):
 		if self.suit in ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES', 'NO_TRUMPS']:
@@ -88,6 +94,9 @@ class Bid:
 
 	def __str__(self):
 		return self.to_string()
+
+	def __repr__(self):
+		return f'Bid(player={self.player}, {self.value.value} {self.suit.suit})'
 
 	def __eq__(self, other):
 		return type(other) == Bid and self.player == other.player and self.value == other.value and self.suit == other.suit

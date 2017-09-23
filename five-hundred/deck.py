@@ -33,3 +33,30 @@ class Deck:
 		card = self.cards[index]
 		del self.cards[index]
 		return card
+
+	def __contains__(self, card):
+		return card in self.cards
+
+	def __str__(self):
+		return f'Deck with {len(self.cards)} cards'
+
+	def __repr__(self):
+		return '' # TODO: finish this when Joker representation is working
+
+		expected_cards = {
+			'clubs':            ['FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING'],
+			'diamonds': ['FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING'],
+			'hearts':   ['FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING'],
+			'spades':           ['FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING']
+		}
+
+		output_lines = {
+			'clubs': '   ',
+			'diamonds': '',
+			'hearts': '',
+			'spades': '   '
+		}
+
+		for suit, ranks in expected_cards:
+			for rank in ranks:
+				output_lines[suit] += (Card(rank, suit).to_minimal_str() if Card(rank, suit) in self else '  ') + ' '
