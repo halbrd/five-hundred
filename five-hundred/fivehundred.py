@@ -3,7 +3,6 @@ from bid import Bid
 from deck import Deck
 
 from collections import OrderedDict
-from enum import Enum
 
 class Player:
 	def __init__(self, account):
@@ -14,6 +13,9 @@ class Player:
 
 	def __repr__(self):
 		return f'Player({self.account.uuid})'
+
+	def __eq__(self, other):
+		return type(other) is Player and self.account.uuid == other.account.uuid
 
 class Team:
 	def __init__(self, players):
@@ -62,10 +64,10 @@ class Trick:
 		return f'Trick(leader={self.leader}, cards=[' + ', '.join([card.to_minimal_str() for card in self.cards]) + '])'
 
 class Hand:
-	def __init__(self, dealer_id, player_ids):
-		self.dealer_id = dealer_id
+	def __init__(self, dealer, players):
+		self.dealer = dealer
 		self.deck = Deck()
-		self.hands = OrderedDict({ player_id: [] for player_id in player_ids + dealer_id})
+		self.hands = OrderedDict({ player: [] for player in players + [dealer]})
 		self.kitty = None
 		self.bids = []
 		self.tricks = []
@@ -98,6 +100,42 @@ class Hand:
 
 	def __str__(self):
 		return 'Bids:' + '\n  '.join([str(bid) for bid in self.bids]) + '\nTricks:' + '\n  '.join([str(trick) for trick in self.tricks])
+
+	def bidding_is_concluded(self):
+		# yes conditions:
+		# 4 pass
+		# bid + 3 pass
+		# hit bidding ceiling (10 no trumps)
+
+	def hand_is_concluded(self):
+		# yes conditions:
+		# 4 pass
+		# 10 tricks complete
+		# misere/open misere wins a trick
+
+	def trick_is_concluded(self, trick_index):
+		# check length of trick at index
+		# if winning bid is open misere, concluded = len == 3
+		# else, concluded = len == 4
+
+	def winning_bid(self):
+		# if bidding not concluded throw error
+
+		# return last item of self.bids
+
+	def accept_bid(self, player, bid):
+		# if hand concluded throw error
+		# if bidding concluded throw error
+
+		# validate
+		# record
+
+	def accept_card(self, player, card):
+		# if hand concluded throw error
+		# if bidding not concluded throw error
+
+		# validate
+		# record
 
 class FiveHundredGame:
 	def __init__(self, teams):
