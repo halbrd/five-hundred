@@ -109,4 +109,7 @@ class Bid:
 		return f'Bid(player={self.player}, {self.value.value} {self.suit.suit})'
 
 	def __eq__(self, other):
+		return type(other) == Bid and self.value == other.value and self.suit == other.suit
+
+	def strict_equals(self, other):
 		return type(other) == Bid and self.player == other.player and self.value == other.value and self.suit == other.suit

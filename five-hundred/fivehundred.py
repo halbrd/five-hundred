@@ -107,6 +107,11 @@ class Hand:
 		# bid + 3 pass
 		# hit bidding ceiling (10 no trumps)
 
+		enough_passes = len(self.bids) >= 4 and self.bids.count(Bid('PASS')) >= 3
+		bid_ceiling = len(self.bids) > 0 and self.bids[-1] == Bid('10', 'NO_TRUMPS')
+
+		return enough_passes or bid_ceiling
+
 	def hand_is_concluded(self):
 		# yes conditions:
 		# 4 pass
