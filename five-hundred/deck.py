@@ -41,22 +41,41 @@ class Deck:
 		return f'Deck with {len(self.cards)} cards'
 
 	def __repr__(self):
-		return '' # TODO: finish this when Joker representation is working
+		cards = [card.to_minimal_str() for card in self.cards]
 
-		expected_cards = {
-			'clubs':            ['FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING'],
-			'diamonds': ['FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING'],
-			'hearts':   ['FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING'],
-			'spades':           ['FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING']
+		# split out duplicate cards
+		unique_cards = set()
+		extra_cards = []
+
+		while len(cards) > 0:
+			if cards[0] in unique_cards:
+				extra_cards.append(cards[0])
+			else:
+				unique_cards.add(cards[0])
+			del cards[0]
+
+
+		expected_cards = {   # not including Joker
+			'CLUBS':            ['FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING'],
+			'DIAMONDS': ['FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING'],
+			'HEARTS':   ['FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING'],
+			'SPADES':           ['FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING']
 		}
 
 		output_lines = {
-			'clubs': '   ',
-			'diamonds': '',
-			'hearts': '',
-			'spades': '   '
+			'CLUBS':    '   ',
+			'DIAMONDS': '',
+			'HEARTS':   '',
+			'SPADES':   '   '
 		}
 
 		for suit, ranks in expected_cards:
 			for rank in ranks:
-				output_lines[suit] += (Card(rank, suit).to_minimal_str() if Card(rank, suit) in self else '  ') + ' '
+				min_str = Card(rank, suit).to_minimal_str()
+				output_lines[suit] += (min_str if min_str in unique_cards else '  ') + ' '
+
+		has_joker = Card('joker').to_minimal_str() in unique_cards
+
+		return 'Deck( ' + ('J ' if has_joker else '')
+			+ '\n  '.join([output_lines[suit] for suit in sorted(output_lines.keys())]) + '\n'
+			+ ' '.join(extra_cards) + ')'

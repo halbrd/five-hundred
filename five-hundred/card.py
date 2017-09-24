@@ -31,7 +31,7 @@ class CardRank:
 
 		# Rank to string comparison - e.g. rank == 'QUEEN'
 		if type(other) is str:
-			return self.rank == other
+			return self.rank == other.upper()
 
 		return False
 
@@ -73,21 +73,36 @@ class CardSuit:
 		return False
 
 class Card:
-	def __init__(self, rank, suit):
-		self.rank = CardRank(rank)
-		self.suit = CardSuit(suit)
+	def __init__(self, rank, suit='JOKER'):
+		if rank.upper() == suit.upper() == 'JOKER':
+			self.rank = CardRank('JOKER')
+			self.suit = None
+		elif rank.upper() == 'JOKER':
+			raise ValueError('Jokers cannot be instantiated with a suit')
+		else:
+			self.rank = CardRank(rank)
+			self.suit = CardSuit(suit)
 
 	def to_string(self):
-		return f'{self.rank} of {self.suit}'
+		if self.rank == 'joker':
+			return 'Joker'
+		else:
+			return f'{self.rank} of {self.suit}'
 
 	def to_minimal_string(self):
-		return self.rank.to_minimal_str() + self.suit.to_minimal_str()
+		if self.rank == 'joker':
+			return 'J '
+		else:
+			return self.rank.to_minimal_str() + self.suit.to_minimal_str()
 
 	def __str__(self):
 		return self.to_string()
 
 	def __repr__(self):
-		return f'Card({self.rank.rank} {self.suit.suit})'
+		if self.rank == 'joker':
+			return 'Card(JOKER)'
+		else:
+			return f'Card({self.rank.rank} {self.suit.suit})'
 
 	def __eq__(self, other):
 		return type(other) == Card and self.suit == other.suit and self.rank == other.rank

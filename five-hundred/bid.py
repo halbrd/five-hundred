@@ -29,7 +29,7 @@ class BidValue:
 
 		# Value to str comparison - e.g. value == '8'
 		if type(other) is str:
-			return self.value == other
+			return self.value == other.upper()
 
 		# Value to int comparison - e.g. value == 8
 		if type(other) is int:
