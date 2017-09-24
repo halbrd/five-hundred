@@ -39,6 +39,8 @@ class BidValue:
 
 class BidSuit:
 	suits = ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES', 'NO_TRUMPS', 'MISERE', 'OPEN_MISERE', 'PASS']
+	dependent_suits = ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES', 'NO_TRUMPS']
+	independent_suits = ['MISERE', 'OPEN_MISERE', 'PASS']
 
 	def __init__(self, suit):
 		if not type(suit) == str:
@@ -75,22 +77,30 @@ class BidSuit:
 		return False
 
 class Bid:
-	def __init__(self, player, value, suit):
+	def __init__(self, player, input1, input2=None):
+		# argument names can't be specific (eg. value, suit) to remain accurate with flexible inputs
+		# eg. ('6', 'NO_TRUMPS'), ('MISERE')
 		self.player = player
-		self.value = BidValue(value)
-		self.suit = BidSuit(suit)
+
+		if input1 in BidSuit.independent_suits and input2 is None:
+			self.suit = BidSuit(input1)
+		elif input1 in BidSuit.independent_suits:
+			raise ValueError('Independent suits cannot be instantiated with a value')
+		else:
+			self.value = BidValue(input1)
+			self.suit = BidSuit(input2)
 
 	def to_string(self):
-		if self.suit in ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES', 'NO_TRUMPS']:
-			return f'{self.player}: {self.value} {self.suit}'
-		else:
+		if self.suit in BidSuit.independent_suits:
 			return f'{self.player}: {self.suit}'
+		else:
+			return f'{self.player}: {self.value} {self.suit}'
 
 	def to_minimal_string(self):
-		if self.suit in ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES', 'NO_TRUMPS']:
-			return self.value.to_minimal_string() + self.suit.to_minimal_string()
+		if self.suit in BidSuit.independent_suits:
+			return self.suit.to_minimal_string() + ' '
 		else:
-			return self.suit.to_minimal_string()
+			return self.value.to_minimal_string() + self.suit.to_minimal_string()
 
 	def __str__(self):
 		return self.to_string()

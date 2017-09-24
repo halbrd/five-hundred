@@ -73,15 +73,16 @@ class CardSuit:
 		return False
 
 class Card:
-	def __init__(self, rank, suit='JOKER'):
-		if rank.upper() == suit.upper() == 'JOKER':
+	def __init__(self, input1, input2=None):
+		# argument names can't be specific (eg. rank, suit) to remain accurate with flexible inputs
+		# eg. ('5', 'HEARTS'), ('JOKER')
+		if input1.upper() == 'JOKER' and input2 is None:
 			self.rank = CardRank('JOKER')
-			self.suit = None
 		elif rank.upper() == 'JOKER':
-			raise ValueError('Jokers cannot be instantiated with a suit')
+			raise ValueError('Jokers cannot be instantiated with a rank')
 		else:
-			self.rank = CardRank(rank)
-			self.suit = CardSuit(suit)
+			self.rank = CardRank(input1)
+			self.suit = CardSuit(input2)
 
 	def to_string(self):
 		if self.rank == 'joker':
