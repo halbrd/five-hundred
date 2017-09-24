@@ -23,15 +23,15 @@ class BidValue:
 		return f'BidValue({self.value})'
 
 	def __eq__(self, other):
-		# Bid to Bid comparison - e.g. value == other_value
+		# Value to Value comparison - e.g. value == other_value
 		if type(other) is BidValue:
 			return self.value == other.value
 
-		# Bid to str comparison - e.g. value == '8'
+		# Value to str comparison - e.g. value == '8'
 		if type(other) is str:
 			return self.value == other
 
-		# Bid to int comparison - e.g. value == 8
+		# Value to int comparison - e.g. value == 8
 		if type(other) is int:
 			return int(self.value) == other
 
