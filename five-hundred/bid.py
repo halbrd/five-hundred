@@ -83,7 +83,7 @@ class BidSuit:
 		return not self.__eq__(other)
 
 class Bid:
-	def __init__(self, player, input1, input2=None):
+	def __init__(self, input1, input2=None, player=None):
 		# argument names can't be specific (eg. value, suit) to remain accurate with flexible inputs
 		# eg. ('6', 'NO_TRUMPS'), ('MISERE')
 		self.player = player
@@ -122,3 +122,9 @@ class Bid:
 
 	def strict_equals(self, other):
 		return type(other) == Bid and self.player == other.player and self.value == other.value and self.suit == other.suit
+
+	def __gt__(self, other):
+		pass # TODO
+
+	def __lt__(self, other):
+		pass # TODO
