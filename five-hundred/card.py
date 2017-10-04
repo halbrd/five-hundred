@@ -35,6 +35,9 @@ class CardRank:
 
 		return False
 
+	def __ne__(self, other):
+		return not self.__eq__(other)
+
 class CardSuit:
 	suits = ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES', 'JOKER']
 
@@ -72,6 +75,9 @@ class CardSuit:
 
 		return False
 
+	def __ne__(self, other):
+		return not self.__eq__(other)
+
 class Card:
 	def __init__(self, input1, input2=None):
 		# argument names can't be specific (eg. rank, suit) to remain accurate with flexible inputs
@@ -107,3 +113,6 @@ class Card:
 
 	def __eq__(self, other):
 		return type(other) == Card and self.suit == other.suit and self.rank == other.rank
+
+	def __ne__(self, other):
+		return not self.__eq__(other)

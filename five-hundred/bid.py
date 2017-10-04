@@ -37,6 +37,9 @@ class BidValue:
 
 		return False
 
+	def __ne__(self, other):
+		return not self.__eq__(other)
+
 class BidSuit:
 	suits = ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES', 'NO_TRUMPS', 'MISERE', 'OPEN_MISERE', 'PASS']
 	dependent_suits = ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES', 'NO_TRUMPS']
@@ -76,6 +79,9 @@ class BidSuit:
 
 		return False
 
+	def __ne__(self, other):
+		return not self.__eq__(other)
+
 class Bid:
 	def __init__(self, player, input1, input2=None):
 		# argument names can't be specific (eg. value, suit) to remain accurate with flexible inputs
@@ -110,6 +116,9 @@ class Bid:
 
 	def __eq__(self, other):
 		return type(other) == Bid and self.value == other.value and self.suit == other.suit
+
+	def __ne__(self, other):
+		return not self.__eq__(other)
 
 	def strict_equals(self, other):
 		return type(other) == Bid and self.player == other.player and self.value == other.value and self.suit == other.suit

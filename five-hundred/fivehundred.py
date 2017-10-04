@@ -17,6 +17,9 @@ class Player:
 	def __eq__(self, other):
 		return type(other) is Player and self.account.uuid == other.account.uuid
 
+	def __ne__(self, other):
+		return not self.__eq__(other)
+
 class Team:
 	def __init__(self, players):
 		self.players = players
@@ -39,7 +42,7 @@ class Kitty:
 
 	def collect_cards(self):
 		if len(self.cards) < 3:
-			raise ValueError(f'Kitty has fewer than 3 cards')
+			raise ValueError(f'Kitty cannot be collected until it has all 3 cards')
 
 		cards, self.cards = self.cards, []
 		self.collected = True
@@ -107,7 +110,7 @@ class Hand:
 		# bid + 3 pass
 		# hit bidding ceiling (10 no trumps)
 
-		enough_passes = len(self.bids) >= 4 and self.bids.count(Bid('PASS')) >= 3
+		enough_passes = len(self.bids) == 4 and self.bids.count(Bid('PASS')) >= 3
 		bid_ceiling = len(self.bids) > 0 and self.bids[-1] == Bid('10', 'NO_TRUMPS')
 
 		return enough_passes or bid_ceiling
@@ -118,15 +121,23 @@ class Hand:
 		# 10 tricks complete
 		# misere/open misere wins a trick
 
+	def winning_bid(self):
+		# if bidding not concluded throw error
+		# return last non-pass item of self.bids
+
+		if not self.bidding_is_concluded():
+			raise ValueError('Winning bid is unknown because bidding is not yet concluded')
+
+		if self.bids.count(Bid('PASS')) == 4:
+			return None
+
+		return list(filter())
+
 	def trick_is_concluded(self, trick_index):
 		# check length of trick at index
 		# if winning bid is open misere, concluded = len == 3
 		# else, concluded = len == 4
 
-	def winning_bid(self):
-		# if bidding not concluded throw error
-
-		# return last item of self.bids
 
 	def accept_bid(self, player, bid):
 		# if hand concluded throw error
