@@ -105,9 +105,10 @@ class Hand:
 		return 'Bids:' + '\n  '.join([str(bid) for bid in self.bids]) + '\nTricks:' + '\n  '.join([str(trick) for trick in self.tricks])
 
 	def bidding_is_concluded(self):
+		# TODO: remove these notes when everthing is a-ok good to go
 		# yes conditions:
-		# 4 pass
-		# bid + 3 pass
+		# 4 passes
+		# normal bid + 3 passes
 		# hit bidding ceiling (10 no trumps)
 
 		enough_passes = len(self.bids) == 4 and self.bids.count(Bid('PASS')) >= 3
@@ -117,9 +118,9 @@ class Hand:
 
 	def hand_is_concluded(self):
 		# yes conditions:
-		# 4 pass
+		# 4 passes
 		# 10 tricks complete
-		# misere/open misere wins a trick
+		# misere/open misere bidder wins a trick
 
 		if not self.bidding_is_concluded():   # this check allows safe usage of self.winning_bid
 			return False
@@ -147,7 +148,10 @@ class Hand:
 		# if winning bid is open misere, concluded = len == 3
 		# else, concluded = len == 4
 
+		return len(self.tricks[trick_index].cards) == (3 if self.winning_bid() in { Bid('MISERE'), Bid('OPEN_MISERE') } else 4)
+
 	def accept_bid(self, player, bid):
+		# TODO
 		# if hand concluded throw error
 		# if bidding concluded throw error
 
@@ -155,6 +159,7 @@ class Hand:
 		# record
 
 	def accept_card(self, player, card):
+		# TODO
 		# if hand concluded throw error
 		# if bidding not concluded throw error
 
