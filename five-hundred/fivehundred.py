@@ -121,6 +121,15 @@ class Hand:
 		# 10 tricks complete
 		# misere/open misere wins a trick
 
+		if not self.bidding_is_concluded():   # this check allows safe usage of self.winning_bid
+			return False
+
+		four_passes = self.bids.count(Bid('PASS')) == 4
+		ten_tricks_complete = len(self.tricks) == 10
+		misere_won_trick = self.winning_bid() in { Bid('MISERE'), BID('OPEN_MISERE') }
+
+		return four_passes or ten_tricks_complete or misere_won_trick
+
 	def winning_bid(self):
 		# if bidding not concluded throw error
 		# return last non-pass item of self.bids
@@ -131,13 +140,12 @@ class Hand:
 		if self.bids.count(Bid('PASS')) == 4:
 			return None
 
-		return list(filter())
+		return [bid for bid in self.bids if bid != Bid('PASS')][-1]
 
 	def trick_is_concluded(self, trick_index):
 		# check length of trick at index
 		# if winning bid is open misere, concluded = len == 3
 		# else, concluded = len == 4
-
 
 	def accept_bid(self, player, bid):
 		# if hand concluded throw error
