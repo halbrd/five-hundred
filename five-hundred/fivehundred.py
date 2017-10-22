@@ -4,6 +4,10 @@ from deck import Deck
 
 from collections import OrderedDict
 
+# TODO list
+# - it might be better to define some 500-specific exceptions, e.g. NotPlayersTurnError, CardNotPosessedError, etc.
+# - docstrings
+
 class Player:
 	def __init__(self, account):
 		self.account = account
@@ -67,10 +71,10 @@ class Trick:
 		return f'Trick(leader={self.leader}, cards=[' + ', '.join([card.to_minimal_str() for card in self.cards]) + '])'
 
 class Hand:
-	def __init__(self, dealer, players):
+	def __init__(self, dealer, player_ids):
 		self.dealer = dealer
 		self.deck = Deck()
-		self.hands = OrderedDict({ player: [] for player in players + [dealer]})
+		self.hands = OrderedDict({ player_id: [] for player_id in player_ids + [dealer]})   # TODO: maybe convert this to a json.dump compatible format
 		self.kitty = None
 		self.bids = []
 		self.tricks = []
@@ -150,25 +154,96 @@ class Hand:
 
 		return len(self.tricks[trick_index].cards) == (3 if self.winning_bid() in { Bid('MISERE'), Bid('OPEN_MISERE') } else 4)
 
-	def accept_bid(self, player, bid):
+	def trick_winner():
 		# TODO
+
+	def last_normal_bid(self):
+		normal_bids = [ bid for bid in self.bids if not bid == Bid('PASS') ]
+		return normal_bids[-1] if normal_bids else None
+
+	def accept_bid(self, bid):
 		# if hand concluded throw error
 		# if bidding concluded throw error
+		# if it's not the player's turn throw error
+		# if the bid isn't allowed throw error
+		#   bid greater than previous
+		#   if misere, required threshold of past bids is met
 
-		# validate
-		# record
+		if self.hand_is_concluded():
+			raise ValueError('Hand is concluded')
 
-	def accept_card(self, player, card):
+		if self.bidding_is_concluded():
+			raise ValueError('Bidding is concluded')
+
+		if not self.next_player() == bid.player_id:
+			raise ValueError('It is not the given player\'s turn')
+
+		# make sure new bid is higher than the last one
+		if not bid > self.last_normal_bid():
+			raise ValueError('New Bid must be higher than previous bid')
+
+		# if the bid is misere, make sure that a 7 bid has been made
+		if bid == Bid('MISERE') and not self.last_normal_bid() >= Bid('SEVEN', 'SPADES'):
+			raise ValueError('Misere cannot be bid until a 7 Bid has been made')
+
+		# the bid is valid
+		self.bids.append(bid)
+
+
+	def accept_card(self, player_id, card):
 		# TODO
 		# if hand concluded throw error
 		# if bidding not concluded throw error
 
 		# validate
+		#   is it that player's turn (and are they playing (not partner's misere))
+		#   do they have that card in their hand
+		#   are they allowed to play that card
 		# record
+
+	def next_player(self):
+		if self.hand_is_concluded():
+			return None
+
+		player_circle = [ player_id for player_id in self.hands.keys() ]
+
+		if not self.bidding_is_concluded():
+			# working this out is more complicated and more manual than I'd like;
+			# there might be a better formulaic method that I didn't come up with
+
+			player_pointer = 0
+
+			for bid in self.bids:
+
+				if bid == Bid('PASS'):
+					# remove the player who passed from player_circle 
+					del player_circle[player_pointer]
+
+					# if the player_pointer was pointing to the end of the list, it should now point to the beginning
+					if player_pointer == len(player_circle):
+						player_pointer = 0
+
+				else:
+					# move the player_pointer around the circle 1 space
+					player_pointer = (player_pointer + i) % len(player_circle)
+
+			return player_circle[player_pointer]
+
+		else:
+			current_trick = self.tricks[-1]
+
+			# next player is at (index of trick leader + number of cards played in current trick) % player count
+
+			trick_leader_index = player_circle.index(self.tricks[-2].trick_winner()) if len(self.tricks) > 1 else 0
+			cards_played_this_trick = len(current_trick.cards)
+
+			return player_circle[len(current_trick.cards) % len(player_circle)]
+
 
 class FiveHundredGame:
 	def __init__(self, teams):
 		self.teams = teams
+		self.spectators = []
 		self.hands = []
 
 	def get_player(self, player_id):
