@@ -90,6 +90,9 @@ class Card:
 			self.rank = CardRank(input1)
 			self.suit = CardSuit(input2)
 
+	def is_joker(self):
+		return self.rank == 'JOKER'
+
 	def to_string(self):
 		if self.rank == 'joker':
 			return 'Joker'
