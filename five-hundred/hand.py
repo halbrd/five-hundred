@@ -267,6 +267,22 @@ class Hand:
 		#   are they allowed to play that card
 		# record
 
+		if not self.next_player() == player_id:
+			raise OutOfTurnError
+
+		if not self.player_has_card(player_id, card):
+			raise CardNotPossessedError
+
+		if not self.card_can_be_played(player_id, card):
+			raise CardNotAllowedError
+
+		# card can be played
+		self.tricks[-1].append(self.hands[player_id].pop(card))
+
+		# check if this was the last card of the trick - if so, prepare the next trick
+		if len(self.tricks[-1].cards) == len(self.hands):
+			self.tricks.append(Trick(self.trick_winner(len(self.tricks) - 1)))
+
 	def next_player(self):
 		if self.hand_is_concluded():
 			return None
@@ -304,3 +320,43 @@ class Hand:
 			cards_played_this_trick = len(current_trick.cards)
 
 			return player_circle[len(current_trick.cards) % len(player_circle)]
+
+	def player_index(self, player_id):
+		try:
+			return self.hands.keys().index(player_id)
+		except ValueError:
+			return None
+
+	def player_has_card(self, player_id, card):
+		return card in self.hands[player_id]
+
+	@check_hand_concluded(state=False)
+	@check_bidding_concluded
+	def card_can_be_played(self, player_id, card):
+		current_trick = self.tricks[-1]
+
+		if self.next_player() != player_id:
+			return False
+
+		if len(current_trick.cards) == 0:   # player is leading, so anything can be played
+			return True
+		else:   # player is not leading, so we have to check if they're following suit (and at least one edge case rule)
+			led_suit = current_trick.cards[0].suit
+			player_can_follow_suit = len([ card for card in self.hands[player_id] if card.suit == led_suit ]) > 0
+
+			# if other team won bidding with misere/open misere, and the player can't follow suit, and the player has the Joker, they must play it
+			if self.winning_bid() in { Bid('MISERE'), BID('OPEN_MISERE') } and not self.are_teammates(self.winning_bid().player_id, player_id) and not player_can_follow_suit and Card('JOKER') in self.hands[player_id] and not card == Card('JOKER'):
+				return False
+
+			# make sure the player follows suit if they can
+			return card.suit == led_suit or not player_can_follow_suit
+
+
+	def are_teammates(self, player1_id, player2_id):
+		try:
+			player1_index = self.hands.keys().index(player1_id)
+			player2_index = self.hands.keys().index(player2_id)
+		except KeyError:
+			raise ValueError('One or both players do not exist')
+
+		return player1_index % 2 == player2_index % 2
