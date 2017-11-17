@@ -1,7 +1,3 @@
-# TODO list
-# - it might be better to define some 500-specific exceptions, e.g. NotPlayersTurnError, CardNotPosessedError, etc.
-# - docstrings
-
 class FiveHundredGame:
 	def __init__(self, teams):
 		self.teams = teams

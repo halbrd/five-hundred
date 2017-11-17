@@ -4,11 +4,94 @@ from deck import Deck
 
 from collections import OrderedDict
 
+class GameStateException(Exception):
+	pass
+
+class BiddingConcludedError(GameStateException):
+	def __init__(self, message='Cannot perform action because bidding is concluded'):
+		super().__init__(message)
+
+class BiddingNotConcludedError(GameStateException):
+	def __init__(self, message='Cannot perform action because bidding is not concluded'):
+		super().__init__(message)
+
+class TrickConcludedError(GameStateException):
+	def __init__(self, message='Cannot perform action because trick is concluded'):
+		super().__init__(message)
+
+class TrickNotConcludedError(GameStateException):
+	def __init__(self, message='Cannot perform action because trick is not concluded'):
+		super().__init__(message)
+
+class HandConcludedError(GameStateException):
+	def __init__(self, message='Cannot perform action because hand is concluded'):
+		super().__init__(message)
+
+class HandNotConcludedError(GameStateException):
+	def __init__(self, message='Cannot perform action because hand is not concluded'):
+		super().__init__(message)
+
+class OutOfTurnError(GameStateException):
+	def __init__(self, message='Cannot perform action because it is another player\'s turn'):
+		super().__init__(message)
+
+class CardNotPossessedError(GameStateException):
+	def __init__(self, message='Cannot perform action because the player does not posess the given card'):
+		super().__init__(message)
+
+
+def check_bidding_concluded(state=True):
+	def check(function):
+		def wrapper(*args, **kwargs):
+			self = args[0]
+
+			if self.bidding_is_concluded() != state:
+				if state:   # bidding should be concluded but isn't
+					raise BiddingNotConcludedError
+				else:   # bidding shouldn't be concluded but is
+					raise BiddingConcludedError
+
+			function(*args, **kwargs)
+		return wrapper
+	return check
+
+def check_trick_concluded(state=True):
+	def check(function):
+		def wrapper(*args, **kwargs):
+			self = args[0]
+			trick_index = args[1]
+
+			trick = self.tricks[trick_index]
+			if self.trick_is_concluded(trick_index) != state:
+				if state:   # trick should be concluded but isn't
+					raise TrickNotConcludedError
+				else:   # trick shouldn't be concluded but is
+					raise TrickConcludedError
+
+			function(*args, **kwargs)
+		return wrapper
+	return check
+
+def check_hand_concluded(state=True):
+	def check(function):
+		def wrapper(*args, **kwargs):
+			self = args[0]
+
+			if self.hand_is_concluded() != state:
+				if state:   # hand should be concluded but isn't
+					raise HandNotConcludedError
+				else:   # hand shouldn't be concluded but is
+					raise HandConcludedError
+
+			function(*args, **kwargs)
+		return wrapper
+	return check
+
 class Hand:
 	def __init__(self, dealer, player_ids):
 		self.dealer = dealer
 		self.deck = Deck()
-		self.hands = OrderedDict({ player_id: [] for player_id in player_ids + [dealer]})   # TODO: maybe convert this to a json.dump compatible format
+		self.hands = OrderedDict({ player_id: [] for player_id in player_ids + [dealer] })   # TODO: maybe convert this to a json.dump compatible format
 		self.kitty = None
 		self.bids = []
 		self.tricks = []
@@ -69,12 +152,10 @@ class Hand:
 
 		return four_passes or ten_tricks_complete or misere_won_trick
 
+	@check_bidding_concluded
 	def winning_bid(self):
 		# if bidding not concluded throw error
 		# return last non-pass item of self.bids
-
-		if not self.bidding_is_concluded():
-			raise ValueError('Winning bid is unknown because bidding is not yet concluded')
 
 		if self.bids.count(Bid('PASS')) == 4:
 			return None
@@ -88,10 +169,9 @@ class Hand:
 
 		return len(self.tricks[trick_index].cards) == (3 if self.winning_bid() in { Bid('MISERE'), Bid('OPEN_MISERE') } else 4)
 
+	@check_bidding_concluded
+	@check_trick_concluded
 	def trick_winner(self, trick_index):
-		if not self.bidding_is_concluded():
-			raise ValueError('Bidding is not yet concluded')
-
 		if len(self.tricks) - 1 > trick_index:
 			raise ValueError(f'Trick {trick_index} does not exist')
 
@@ -129,6 +209,8 @@ class Hand:
 		normal_bids = [ bid for bid in self.bids if not bid == Bid('PASS') ]
 		return normal_bids[-1] if normal_bids else None
 
+	@check_hand_concluded(state=False)
+	@check_bidding_concluded(state=False)
 	def accept_bid(self, bid):
 		# if hand concluded throw error
 		# if bidding concluded throw error
@@ -137,14 +219,8 @@ class Hand:
 		#   bid greater than previous
 		#   if misere, required threshold of past bids is met
 
-		if self.hand_is_concluded():
-			raise ValueError('Hand is concluded')
-
-		if self.bidding_is_concluded():
-			raise ValueError('Bidding is concluded')
-
 		if not self.next_player() == bid.player_id:
-			raise ValueError('It is not the given player\'s turn')
+			raise OutOfTurnError
 
 		# make sure new bid is higher than the last one
 		if not bid > self.last_normal_bid():
@@ -157,6 +233,12 @@ class Hand:
 		# the bid is valid
 		self.bids.append(bid)
 
+		# if this was the last bid, start the first trick
+		if self.bidding_is_concluded():
+			self.tricks.append(Trick(self.winning_bid().player_id))
+
+	@check_hand_concluded(state=False)
+	@check_bidding_concluded
 	def accept_card(self, player_id, card):
 		# TODO
 		# if hand concluded throw error
