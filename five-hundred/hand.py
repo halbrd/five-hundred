@@ -39,6 +39,10 @@ class CardNotPossessedError(GameStateException):
 	def __init__(self, message='Cannot perform action because the player does not posess the given card'):
 		super().__init__(message)
 
+class CardNotAllowedError(GameStateException):
+	def __init__(self, message='Cannot perform action because the player is not allowed to play the given card'):
+		super().__init__(message)
+
 
 def check_bidding_concluded(state=True):
 	def check(function):
@@ -203,7 +207,20 @@ class Hand:
 		else:
 			trump = bid.suit
 
-		return highest_trump(trump, trick.cards) or highest_non_trump(trump, trick.cards)
+		# time to figure out who won this thing
+		winning_card = highest_trump(trump, trick.cards) or highest_non_trump(trump, trick.cards)
+		winning_index = trick.cards.index(winning_card)
+
+		# the winning player will be the player who is winning_index places to the left of the trick leader
+		# this means that the winning player will be (number of places between the bid winner and the trick leader + winning_index) to the left of the bid winner
+		if trick_index == 0:
+			trick_leader = self.winning_bid().player_id
+		else:
+			trick_leader = self.trick_winner(trick_index - 1)
+		trick_leader_index = self.hands.keys().index(trick_leader)
+
+		winning_player = self.hands.keys()[ (trick_leader_index + winning_index) % len(self.hands.keys()) ]
+		return winning_player
 
 	def last_normal_bid(self):
 		normal_bids = [ bid for bid in self.bids if not bid == Bid('PASS') ]
