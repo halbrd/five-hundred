@@ -1,75 +1,8 @@
-from account import *
 from bid import Bid
-from deck import Deck
 from card import Card
+from deck import Deck
 
 from collections import OrderedDict
-
-# TODO list
-# - it might be better to define some 500-specific exceptions, e.g. NotPlayersTurnError, CardNotPosessedError, etc.
-# - docstrings
-
-class Player:
-	def __init__(self, account):
-		self.account = account
-
-	def __str__(self):
-		return self.account.username
-
-	def __repr__(self):
-		return f'Player({self.account.uuid})'
-
-	def __eq__(self, other):
-		return type(other) is Player and self.account.uuid == other.account.uuid
-
-	def __ne__(self, other):
-		return not self.__eq__(other)
-
-class Team:
-	def __init__(self, players):
-		self.players = players
-		self.score = 0
-
-	def __str__(self):
-		return 'Players: ' + ', '.join([str(player.account) for player in self.players]) + '\n'
-			+ 'Score: ' + str(self.score)
-
-	def __repr__(self):
-		return 'Team(players=[' + ', '.join([player.account.uuid for player in self.players]) + f'], score={self.score})'
-
-class Kitty:
-	def __init__(self, cards=None):
-		self.cards = cards or []
-		self.collected = False
-
-	def append(self, value):
-		self.cards.append(value)
-
-	def collect_cards(self):
-		if len(self.cards) < 3:
-			raise ValueError(f'Kitty cannot be collected until it has all 3 cards')
-
-		cards, self.cards = self.cards, []
-		self.collected = True
-		return cards
-
-	def __str__(self):
-		return ', '.join([str(card) for card in self.cards]) + ' (' + ('' if self.collected else 'un') + 'collected)'
-
-	def __repr__(self):
-		return 'Kitty(cards=[' + ', '.join([card.to_minimal_string() for card in self.cards]) + f'], collected={self.collected})
-
-class Trick:
-	def __init__(self, leader):
-		self.leader = leader
-		self.cards = []
-
-	def __str__(self):
-		return f'Leader: {self.leader}\n'
-			+ 'Cards: ' + ', '.join([str(card) for card in self.cards])
-
-	def __repr__(self):
-		return f'Trick(leader={self.leader}, cards=[' + ', '.join([card.to_minimal_str() for card in self.cards]) + '])'
 
 class Hand:
 	def __init__(self, dealer, player_ids):
@@ -272,17 +205,3 @@ class Hand:
 			cards_played_this_trick = len(current_trick.cards)
 
 			return player_circle[len(current_trick.cards) % len(player_circle)]
-
-
-class FiveHundredGame:
-	def __init__(self, teams):
-		self.teams = teams
-		self.spectators = []
-		self.hands = []
-
-	def get_player(self, player_id):
-		for team in self.teams:
-			for player in team.players:
-				if player.id == player_id:
-					return player
-		return None
