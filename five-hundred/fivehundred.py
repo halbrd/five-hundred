@@ -1,6 +1,7 @@
 from account import *
 from bid import Bid
 from deck import Deck
+from card import Card
 
 from collections import OrderedDict
 
@@ -154,8 +155,42 @@ class Hand:
 
 		return len(self.tricks[trick_index].cards) == (3 if self.winning_bid() in { Bid('MISERE'), Bid('OPEN_MISERE') } else 4)
 
-	def trick_winner():
-		# TODO
+	def trick_winner(self, trick_index):
+		if not self.bidding_is_concluded():
+			raise ValueError('Bidding is not yet concluded')
+
+		if len(self.tricks) - 1 > trick_index:
+			raise ValueError(f'Trick {trick_index} does not exist')
+
+		if not self.trick_is_concluded(trick_index):
+			raise ValueError(f'Trick {trick_index} is not concluded')
+
+		trick = self.tricks[trick_index]
+
+		def highest_trump(trump, cards):
+			if Card('JOKER') in cards:
+				return Card('JOKER')
+
+			# if the Joker was played, then the function has already returned, so we can safely access card.suit
+			trumps = [ card for card in cards if card.suit == trump ]
+
+			if not trumps:
+				return None
+
+			return max(trumps, key=lambda card: card.rank)
+
+		def highest_non_trump(trump, cards):
+			non_trumps = [ card for card in cards if not card.is_joker() and not card.suit == trump ]
+
+			return max(non_trumps, key=lambda card: card.rank)
+
+		bid = self.winning_bid()
+		if bid in { Bid('MISERE'), Bid('OPEN_MISERE') } or bid.suit == 'NO_TRUMPS':
+			trump = None
+		else:
+			trump = bid.suit
+
+		return highest_trump(trump, trick.cards) or highest_non_trump(trump, trick.cards)
 
 	def last_normal_bid(self):
 		normal_bids = [ bid for bid in self.bids if not bid == Bid('PASS') ]
@@ -189,7 +224,6 @@ class Hand:
 		# the bid is valid
 		self.bids.append(bid)
 
-
 	def accept_card(self, player_id, card):
 		# TODO
 		# if hand concluded throw error
@@ -216,7 +250,7 @@ class Hand:
 			for bid in self.bids:
 
 				if bid == Bid('PASS'):
-					# remove the player who passed from player_circle 
+					# remove the player who passed from player_circle
 					del player_circle[player_pointer]
 
 					# if the player_pointer was pointing to the end of the list, it should now point to the beginning
