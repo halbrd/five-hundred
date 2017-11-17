@@ -4,6 +4,8 @@ class FiveHundredGame:
 		self.spectators = []
 		self.hands = []
 
+		self.hands.append(Hand())
+
 	def get_player(self, player_id):
 		for team in self.teams:
 			for player in team.players:

@@ -256,7 +256,7 @@ class Hand:
 
 	@check_hand_concluded(state=False)
 	@check_bidding_concluded
-	def accept_card(self, player_id, card):
+	def accept_card(self, card, player_id):
 		# TODO
 		# if hand concluded throw error
 		# if bidding not concluded throw error

@@ -76,6 +76,6 @@ class Deck:
 
 		has_joker = Card('joker').to_minimal_str() in unique_cards
 
-		return 'Deck( ' + ('J ' if has_joker else '')
-			+ '\n  '.join([output_lines[suit] for suit in sorted(output_lines.keys())]) + '\n'
+		return 'Deck( ' + ('J ' if has_joker else '') \
+			+ '\n  '.join([output_lines[suit] for suit in sorted(output_lines.keys())]) + '\n' \
 			+ ' '.join(extra_cards) + ')'
