@@ -14,7 +14,7 @@ class Player:
 		if type(other) is Player:
 			return self.account.uuid == other.account.uuid
 		elif type(other) is str:
-			return self.account.uuid = other
+			return self.account.uuid == other
 		else:
 			return False
 

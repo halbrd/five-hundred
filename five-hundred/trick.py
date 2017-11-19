@@ -4,7 +4,7 @@ class Trick:
 		self.cards = []
 
 	def __str__(self):
-		return f'Leader: {self.leader}\n'
+		return f'Leader: {self.leader}\n' \
 			+ 'Cards: ' + ', '.join([str(card) for card in self.cards])
 
 	def __repr__(self):
