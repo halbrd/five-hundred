@@ -92,10 +92,10 @@ def check_hand_concluded(state=True):
 	return check
 
 class Hand:
-	def __init__(self, dealer, player_ids):
-		self.dealer = dealer
+	def __init__(self, player_ids):
+		self.dealer_id = player_ids[0]
 		self.deck = Deck()
-		self.hands = OrderedDict({ player_id: [] for player_id in player_ids + [dealer] })   # TODO: maybe convert this to a json.dump compatible format
+		self.hands = OrderedDict({ player_id: [] for player_id in player_ids[1:] + player_ids[0] })   # TODO: maybe convert this to a json.dump compatible format
 		self.kitty = None
 		self.bids = []
 		self.tricks = []

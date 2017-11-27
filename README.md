@@ -2,7 +2,7 @@
 500 card game
 
 ## Normal game flow:
-* game = FiveHundredGame([ Team([ Player(Account(...)), Player(Account(...)) ]), Team([ Player(Account(...)), Player(Account(...)) ]) ])
+* game = FiveHundredGame([ Player(player1_id, player1_name), Player(player2_id, player2_name), Player(player3_id, player3_name), Player(player4_id, player4_name) ])
 * loop until game complete:
 	* loop until bidding complete:
 		* game.hands[-1].accept_bid(Bid(..., playerN_id))
