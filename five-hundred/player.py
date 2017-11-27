@@ -1,20 +1,17 @@
-from account import *
-
 class Player:
-	def __init__(self, account):
-		self.account = account
+	def __init__(self, id, name):
+		self.id = id
+		self.name = name
 
 	def __str__(self):
-		return self.account.username
+		return self.name
 
 	def __repr__(self):
-		return f'Player({self.account.uuid})'
+		return f'Player({self.id})'
 
 	def __eq__(self, other):
 		if type(other) is Player:
-			return self.account.uuid == other.account.uuid
-		elif type(other) is str:
-			return self.account.uuid == other
+			return self.id == other.id
 		else:
 			return False
 
