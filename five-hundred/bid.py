@@ -83,18 +83,16 @@ class BidSuit:
 		return not self.__eq__(other)
 
 class Bid:
-	def __init__(self, input1, input2=None, player_id=None):
-		# argument names can't be specific (eg. value, suit) to remain accurate with flexible inputs
-		# eg. ('6', 'NO_TRUMPS'), ('MISERE')
+	def __init__(self, suit, value=None, player_id=None):
 		self.player_id = player_id
 
-		if input1 in BidSuit.independent_suits and input2 is None:
-			self.suit = BidSuit(input1)
-		elif input1 in BidSuit.independent_suits:
+		if suit in BidSuit.independent_suits and value is None:
+			self.suit = BidSuit(suit)
+		elif suit in BidSuit.independent_suits:
 			raise ValueError('Independent suits cannot be instantiated with a value')
 		else:
-			self.value = BidValue(input1)
-			self.suit = BidSuit(input2)
+			self.suit = BidSuit(suit)
+			self.value = BidValue(value)
 
 	def to_string(self):
 		if self.suit in BidSuit.independent_suits:
@@ -112,7 +110,7 @@ class Bid:
 		return self.to_string()
 
 	def __repr__(self):
-		return f'Bid(player_id={self.player_id}, {self.value.value} {self.suit.suit})'
+		return f'Bid({self.suit.suit}, {self.value.value}, player_id={self.player_id})'
 
 	def __eq__(self, other):
 		return type(other) == Bid and self.value == other.value and self.suit == other.suit
