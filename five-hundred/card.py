@@ -87,41 +87,42 @@ class CardSuit:
 
 class Card:
 	def __init__(self, suit, rank=None):
-		if suit.upper() == 'JOKER' and rank is not None:
+		self.suit = CardSuit(suit)
+
+		if self.suit == 'JOKER' and rank is not None:
 			raise ValueError('Jokers cannot be instantiated with a rank')
-		elif suit.upper() == 'JOKER':
-			self.suit = CardSuit('JOKER')
-			# self.rank is undefined
-		else:
-			self.suit = CardSuit(suit)
+		elif self.suit != 'JOKER':
 			self.rank = CardRank(rank)
 
 	def is_joker(self):
-		return self.rank == 'JOKER'
+		return self.suit == 'JOKER'
 
 	def to_string(self):
-		if self.rank == 'joker':
+		if self.suit == 'joker':
 			return 'Joker'
 		else:
 			return f'{self.rank} of {self.suit}'
 
 	def to_minimal_string(self):
-		if self.rank == 'joker':
-			return 'J '
+		if self.suit == 'joker':
+			return 'J-'
 		else:
-			return self.rank.to_minimal_str() + self.suit.to_minimal_str()
+			return self.rank.to_minimal_string() + self.suit.to_minimal_string()
 
 	def __str__(self):
 		return self.to_string()
 
 	def __repr__(self):
-		if self.rank == 'joker':
+		if self.suit == 'joker':
 			return 'Card(JOKER)'
 		else:
 			return f'Card({self.suit.suit}, {self.rank.rank})'
 
 	def __eq__(self, other):
-		return type(other) == Card and self.suit == other.suit and self.rank == other.rank
+		if self.is_joker():
+			return other.is_joker()
+		else:
+			return type(other) == Card and self.suit == other.suit and self.rank == other.rank
 
 	def __ne__(self, other):
 		return not self.__eq__(other)
