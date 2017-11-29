@@ -89,6 +89,9 @@ class Card:
 	def __init__(self, suit, rank=None):
 		if suit.upper() == 'JOKER' and rank is not None:
 			raise ValueError('Jokers cannot be instantiated with a rank')
+		elif suit.upper() == 'JOKER':
+			self.suit = CardSuit('JOKER')
+			# self.rank is undefined
 		else:
 			self.suit = CardSuit(suit)
 			self.rank = CardRank(rank)
