@@ -73,12 +73,16 @@ class TestCardRankDunder:
 		for test_case in positive_test_cases:
 			left, right = test_case[0], test_case[1]
 			assert left == right
+			assert right == left
 			assert not left != right
+			assert not right != left
 
 		for test_case in negative_test_cases:
 			left, right = test_case[0], test_case[1]
 			assert not left == right
+			assert not right == left
 			assert left != right
+			assert right != left
 
 
 
@@ -126,8 +130,8 @@ class TestCardSuitDunder:
 	def test_repr(self):
 		suits = ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES', 'JOKER']
 
-		for rank in ranks:
-			assert repr(CardRank(rank)) == f'CardSuit({rank})'
+		for suit in suits:
+			assert repr(CardSuit(suit)) == f'CardSuit({suit})'
 
 	def test_eq_ne(self):
 		positive_test_cases = [
@@ -151,9 +155,131 @@ class TestCardSuitDunder:
 		for test_case in positive_test_cases:
 			left, right = test_case[0], test_case[1]
 			assert left == right
+			assert right == left
 			assert not left != right
+			assert not right != left
 
 		for test_case in negative_test_cases:
 			left, right = test_case[0], test_case[1]
 			assert not left == right
+			assert not right == left
 			assert left != right
+			assert right != left
+
+class TestCard:
+	def test_normal_inputs(self):
+		card = Card('HEARTS', 'FOUR')
+		assert card.suit == CardSuit('HEARTS')
+		assert card.rank == CardRank('FOUR')
+
+		card = Card('Spades', 'ace')
+		assert card.suit == CardSuit('SPADES')
+		assert card.rank == CardRank('ACE')
+
+		card = Card('JOKER')
+		assert card.is_joker()
+		assert card.suit == CardSuit('JOKER')
+		assert not hasattr(card, 'rank')
+
+		card = Card('JOKER', None)
+		assert card.is_joker()
+		assert card.suit == CardSuit('JOKER')
+		assert not hasattr(card, 'rank')
+
+	def test_joker_with_rank(self):
+		with pytest.raises(ValueError):
+			card = Card('JOKER', 'TWO')
+
+	def test_invalid_inputs(self):
+		inputs = [
+			[ 'FOUR', 'HEARTS' ],
+			[ 'JOKER', 'FOUR' ],
+			[ 'FOUR', 'JOKER' ],
+			[ None, 'JOKER' ],
+			[ 'HEARTS', None ],
+			[ None, 'FOUR' ],
+			[ 'FOUR', None ],
+			[ 'HEARTS', 4 ],
+			[ 'HEARTS', True ],
+			[ 'HEARTS', False ],
+			[ 'HEARTS', [] ],
+		]
+
+		for input in inputs:
+			with pytest.raises(ValueError):
+				card = Card(input[0], input[1])
+
+	def test_is_joker(self):
+		card = Card('HEARTS', 'FOUR')
+		assert not card.is_joker()
+
+		card = Card('JOKER')
+		assert card.is_joker()
+
+class TestCardDunder:
+	def test_to_string(self):
+		test_cases = [
+			# [ param1, param2, str ]
+			[ 'HEARTS', 'FOUR', 'Four of Hearts' ],
+			[ 'SPADES', 'ACE', 'Ace of Spades' ],
+			[ 'JOKER', None, 'Joker' ],
+			[ 'DIAMONDS', 'QUEEN', 'Queen of Diamonds' ],
+			[ 'CLUBS', 'TEN', 'Ten of Clubs' ],
+		]
+
+		for test_case in test_cases:
+			assert Card(test_case[0], test_case[1]).to_string() == test_case[2]
+
+	def test_to_minimal_string(self):
+		test_cases = [
+			# [ param1, param2, str ]
+			[ 'HEARTS', 'FOUR', '4H' ],
+			[ 'SPADES', 'ACE', 'AS' ],
+			[ 'DIAMONDS', 'QUEEN', 'QD' ],
+			[ 'CLUBS', 'TEN', 'TC' ],
+			[ 'JOKER', None, 'J-' ]
+		]
+
+		for test_case in test_cases:
+			assert Card(test_case[0], test_case[1]).to_minimal_string() == test_case[2]
+
+	def test_repr(self):
+		test_cases = [
+			# [ param1, param2, str ]
+			[ 'HEARTS', 'FOUR', 'Card(HEARTS, FOUR)' ],
+			[ 'SPADES', 'ACE', 'Card(SPADES, ACE)' ],
+			[ 'DIAMONDS', 'QUEEN', 'Card(DIAMONDS, QUEEN)' ],
+			[ 'CLUBS', 'TEN', 'Card(CLUBS, TEN)' ],
+			[ 'JOKER', None, 'Card(JOKER)' ]
+		]
+
+		for test_case in test_cases:
+			assert repr(Card(test_case[0], test_case[1])) == test_case[2]
+
+	def test_eq_ne(self):
+		positive_test_cases = [
+			[ Card('DIAMONDS', 'FIVE'), Card('DIAMONDS', 'FIVE') ],
+			[ Card('JOKER'), Card('JOKER') ],
+			[ Card('JOKER', None), Card('JOKER') ],
+		]
+
+		negative_test_cases = [
+			[ Card('DIAMONDS', 'FIVE'), Card('DIAMONDS', 'FOUR') ],
+			[ Card('DIAMONDS', 'FIVE'), Card('HEARTS', 'FIVE') ],
+			[ Card('DIAMONDS', 'FIVE'), Card('SPADES', 'QUEEN') ],
+			[ Card('DIAMONDS', 'FIVE'), Card('JOKER') ],
+		]
+
+		for test_case in positive_test_cases:
+			left, right = test_case[0], test_case[1]
+			assert left == right
+			assert right == left
+			assert not left != right
+			assert not right != left
+
+		for test_case in negative_test_cases:
+			left, right = test_case[0], test_case[1]
+			assert not left == right
+			assert not right == left
+			assert left != right
+			assert right != left
