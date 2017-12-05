@@ -33,6 +33,10 @@ class TestBidValueDunder:
 
 		assert BidValue('10').to_minimal_string() == BidValue(10).to_minimal_string() == 'T'
 
+		# check that all minimal strings are unique
+		minimal_strings = [ BidValue(value).to_minimal_string() for value in BidValue.values ]
+		assert len(minimal_strings) == len(set(minimal_strings))
+
 	def test_repr(self):
 		inputs = ['6', '7', '8', '9', '10', 6, 7, 8, 9, 10]
 
@@ -123,6 +127,10 @@ class TestBidSuitDunder:
 
 		for input in inputs:
 			assert BidSuit(input).to_minimal_string() == input[0].upper()
+
+		# check that all minimal strings are unique
+		minimal_strings = [ BidSuit(suit).to_minimal_string() for suit in BidSuit.suits ]
+		assert len(minimal_strings) == len(set(minimal_strings))
 
 	def test_repr(self):
 		inputs = ['CLUBS', 'diamonds', 'Hearts', 'SpAdEs', 'No Trumps', 'misere', 'OPEN_misere']

@@ -42,6 +42,9 @@ class TestCardRankDunder:
 			'NINE': '9', 'TEN': 'T', 'JACK': 'J', 'QUEEN': 'Q', 'KING': 'K'
 		}
 
+		# check that all minimal strings are unique
+		assert len(test_cases.values()) == len(set(test_cases.values()))
+
 		for input, output in test_cases.items():
 			card_rank = CardRank(input)
 			assert card_rank.to_minimal_string() == output
@@ -123,6 +126,9 @@ class TestCardSuitDunder:
 		test_cases = {
 			'CLUBS': 'C', 'DIAMONDS': 'D', 'HEARTS': 'H', 'SPADES': 'S', 'JOKER': 'J'
 		}
+
+		# check that all minimal strings are unique
+		assert len(test_cases.values()) == len(set(test_cases.values()))
 
 		for input, output in test_cases.items():
 			card_suit = CardSuit(input)
