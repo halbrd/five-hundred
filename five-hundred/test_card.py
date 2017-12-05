@@ -1,6 +1,7 @@
 import pytest
 
 from card import CardRank, CardSuit, Card
+from bid import BidSuit
 
 class TestCardRank:
 	def test_rank_normal_inputs(self):
@@ -141,23 +142,59 @@ class TestCardSuitDunder:
 			[ CardSuit('CLUBS'), 'clubs' ]
 		]
 
-		negative_test_cases = [
-			[ CardSuit('DIAMONDS'), 7 ],
-			[ CardSuit('DIAMONDS'), '' ],
-			[ CardSuit('DIAMONDS'), '7' ],
-			[ CardSuit('DIAMONDS'), True ],
-			[ CardSuit('DIAMONDS'), False ],
-			[ CardSuit('DIAMONDS'), None ],
-			[ CardSuit('DIAMONDS'), CardSuit('HEARTS') ],
-			[ CardSuit('DIAMONDS'), CardSuit('JOKER') ]
-		]
-
 		for test_case in positive_test_cases:
 			left, right = test_case[0], test_case[1]
 			assert left == right
 			assert right == left
 			assert not left != right
 			assert not right != left
+
+		negative_test_cases = [
+			# CardSuit to CardSuit
+			[ CardSuit('DIAMONDS'), CardSuit('HEARTS') ],
+			[ CardSuit('DIAMONDS'), CardSuit('JOKER') ],
+			# CardSuit to other
+			[ CardSuit('DIAMONDS'), 7 ],
+			[ CardSuit('DIAMONDS'), '' ],
+			[ CardSuit('DIAMONDS'), '7' ],
+			[ CardSuit('DIAMONDS'), True ],
+			[ CardSuit('DIAMONDS'), False ],
+			[ CardSuit('DIAMONDS'), None ],
+			# CardSuit to BidSuit - general inequalities
+			[ CardSuit('CLUBS'), BidSuit('DIAMONDS') ],
+			[ CardSuit('DIAMONDS'), BidSuit('HEARTS') ],
+			[ CardSuit('HEARTS'), BidSuit('SPADES') ],
+			[ CardSuit('SPADES'), BidSuit('CLUBS') ],
+			# CardSuit to BidSuit - no BidSuits should equal a Joker
+			[ CardSuit('JOKER'), BidSuit('CLUBS') ],
+			[ CardSuit('JOKER'), BidSuit('DIAMONDS') ],
+			[ CardSuit('JOKER'), BidSuit('HEARTS') ],
+			[ CardSuit('JOKER'), BidSuit('SPADES') ],
+			# CardSuit to BidSuit - no BidSuits should equal a No Trumps
+			[ CardSuit('CLUBS'), BidSuit('NO_TRUMPS') ],
+			[ CardSuit('DIAMONDS'), BidSuit('NO_TRUMPS') ],
+			[ CardSuit('HEARTS'), BidSuit('NO_TRUMPS') ],
+			[ CardSuit('SPADES'), BidSuit('NO_TRUMPS') ],
+			[ CardSuit('JOKER'), BidSuit('NO_TRUMPS') ],
+			# CardSuit to BidSuit - no BidSuits should equal a Misere
+			[ CardSuit('CLUBS'), BidSuit('MISERE') ],
+			[ CardSuit('DIAMONDS'), BidSuit('MISERE') ],
+			[ CardSuit('HEARTS'), BidSuit('MISERE') ],
+			[ CardSuit('SPADES'), BidSuit('MISERE') ],
+			[ CardSuit('JOKER'), BidSuit('MISERE') ],
+			# CardSuit to BidSuit - no BidSuits should equal an Open Misere
+			[ CardSuit('CLUBS'), BidSuit('OPEN_MISERE') ],
+			[ CardSuit('DIAMONDS'), BidSuit('OPEN_MISERE') ],
+			[ CardSuit('HEARTS'), BidSuit('OPEN_MISERE') ],
+			[ CardSuit('SPADES'), BidSuit('OPEN_MISERE') ],
+			[ CardSuit('JOKER'), BidSuit('OPEN_MISERE') ],
+			# CardSuit to BidSuit - no BidSuits should equal a Pass
+			[ CardSuit('CLUBS'), BidSuit('PASS') ],
+			[ CardSuit('DIAMONDS'), BidSuit('PASS') ],
+			[ CardSuit('HEARTS'), BidSuit('PASS') ],
+			[ CardSuit('SPADES'), BidSuit('PASS') ],
+			[ CardSuit('JOKER'), BidSuit('PASS') ],
+		]
 
 		for test_case in negative_test_cases:
 			left, right = test_case[0], test_case[1]
