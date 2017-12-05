@@ -3,14 +3,18 @@ from card import Card
 class Kitty:
 	def __init__(self, cards=None):
 		# if cards were passed, check that they are actually 3 Cards
-		if cards and ( len(cards) > 3 or not all([type(card) == Card for card in cards]) ):
+		if cards is not None and (
+			not type(cards) in { list, tuple }   # is not a relevant type
+			or len(cards) > 3   # has too many cards
+			or not all([type(card) == Card for card in cards])   # contains non-Cards
+		):
 			raise ValueError('cards parameter must be an iterable of 3 or fewer cards (or nothing)')
 
-		self.cards = list(cards) or []
+		self.cards = list(cards or [])
 		self.collected = False
 
 	def append(self, value):
-		if len(self.cards) + 1 < 3:
+		if len(self.cards) + 1 > 3:
 			raise ValueError('Kitty cannot contain more than 3 cards')
 		if not type(value) == Card:
 			raise ValueError('Kitty cannot contain non-Card types')
