@@ -1,3 +1,5 @@
+import bid
+
 class CardRank:
 	ranks = ['ACE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING']
 
@@ -73,7 +75,7 @@ class CardSuit:
 
 	def __eq__(self, other):
 		# Suit to Suit comparison - e.g. suit == other_suit
-		if type(other) is CardSuit or type(other) is CardSuit:
+		if type(other) is CardSuit or type(other) is bid.BidSuit:
 			return self.suit == other.suit
 
 		# Suit to string comparison - e.g. suit == 'HEARTS'
