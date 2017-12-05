@@ -1,9 +1,10 @@
+import card
+
 class BidValue:
 	values = ['6', '7', '8', '9', '10']
 
 	def __init__(self, value):
-		if type(value) == int:
-			value = str(value)
+		value = str(value)
 
 		if not value in BidValue.values:
 			raise ValueError(f'"{value}" is not a valid bid value')
@@ -14,7 +15,10 @@ class BidValue:
 		return str(self.value)
 
 	def to_minimal_string(self):
-		return str(self.value)[0]
+		if self.value == '10':
+			return 'T'
+		else:
+			return str(self.value)[0]
 
 	def __str__(self):
 		return self.to_string()
@@ -49,7 +53,7 @@ class BidSuit:
 		if not type(suit) == str:
 			raise ValueError('BidSuit argument must be a string')
 
-		suit = suit.upper()
+		suit = suit.upper().replace(' ', '_')
 
 		if not suit in BidSuit.suits:
 			raise ValueError(f'"{suit}" is not a valid bid suit')
@@ -70,7 +74,7 @@ class BidSuit:
 
 	def __eq__(self, other):
 		# Suit to Suit comparison - e.g. suit == other_suit
-		if type(other) is BidSuit or type(other) is CardSuit:
+		if type(other) is BidSuit or type(other) is card.CardSuit:
 			return self.suit == other.suit
 
 		# Suit to string comparison - e.g. suit == 'HEARTS'
@@ -86,6 +90,8 @@ class Bid:
 	def __init__(self, suit, value=None, player_id=None):
 		self.player_id = player_id
 
+		suit = str(suit).upper().replace(' ', '_')
+
 		if suit in BidSuit.independent_suits and value is None:
 			self.suit = BidSuit(suit)
 		elif suit in BidSuit.independent_suits:
@@ -96,13 +102,18 @@ class Bid:
 
 	def to_string(self):
 		if self.suit in BidSuit.independent_suits:
-			return f'{self.player_id}: {self.suit}'
+			r = str(self.suit)
 		else:
-			return f'{self.player_id}: {self.value} {self.suit}'
+			r = f'{self.value} {self.suit}'
+
+		if self.player_id is not None:
+			r = f'{self.player_id}: {r}'
+
+		return r
 
 	def to_minimal_string(self):
 		if self.suit in BidSuit.independent_suits:
-			return self.suit.to_minimal_string() + ' '
+			return self.suit.to_minimal_string() + '-'
 		else:
 			return self.value.to_minimal_string() + self.suit.to_minimal_string()
 
@@ -110,27 +121,35 @@ class Bid:
 		return self.to_string()
 
 	def __repr__(self):
-		return f'Bid({self.suit.suit}, {self.value.value}, player_id={self.player_id})'
+		if self.suit in BidSuit.independent_suits:
+			return f'Bid({self.suit.suit}, player_id={self.player_id})'
+		else:
+			return f'Bid({self.suit.suit}, {self.value.value}, player_id={self.player_id})'
 
 	def __eq__(self, other):
-		return type(other) == Bid and self.value == other.value and self.suit == other.suit
+		both_have_no_value = not hasattr(self, 'value') and not hasattr(other, 'value')
+
+		return type(other) == Bid \
+			and self.suit == other.suit \
+			and ( both_have_no_value or self.value == other.value )
 
 	def __ne__(self, other):
 		return not self.__eq__(other)
 
 	def strict_equals(self, other):
-		return type(other) == Bid and self.player_id == other.player_id and self.value == other.value and self.suit == other.suit
+		return self.__eq__(other) and self.player_id == other.player_id
 
 	def _compare(self, other):
 		hierarchy = [
-			Bid('6', 'SPADES'), Bid('6', 'CLUBS'), Bid('6', 'DIAMONDS'), Bid('6', 'HEARTS'), Bid('6', 'NO_TRUMPS'),
-			Bid('7', 'SPADES'), Bid('7', 'CLUBS'), Bid('7', 'DIAMONDS'), Bid('7', 'HEARTS'), Bid('7', 'NO_TRUMPS'),
+			Bid('PASS'),
+			Bid('SPADES', '6'), Bid('CLUBS', '6'), Bid('DIAMONDS', '6'), Bid('HEARTS', '6'), Bid('NO_TRUMPS', '6'),
+			Bid('SPADES', '7'), Bid('CLUBS', '7'), Bid('DIAMONDS', '7'), Bid('HEARTS', '7'), Bid('NO_TRUMPS', '7'),
 			Bid('MISERE'),
-			Bid('8', 'SPADES'), Bid('8', 'CLUBS'), Bid('8', 'DIAMONDS'), Bid('8', 'HEARTS'), Bid('8', 'NO_TRUMPS'),
-			Bid('9', 'SPADES'), Bid('9', 'CLUBS'), Bid('9', 'DIAMONDS'), Bid('9', 'HEARTS'), Bid('9', 'NO_TRUMPS'),
-			Bid('10', 'SPADES'), Bid('10', 'CLUBS'), Bid('10', 'DIAMONDS'),
+			Bid('SPADES', '8'), Bid('CLUBS', '8'), Bid('DIAMONDS', '8'), Bid('HEARTS', '8'), Bid('NO_TRUMPS', '8'),
+			Bid('SPADES', '9'), Bid('CLUBS', '9'), Bid('DIAMONDS', '9'), Bid('HEARTS', '9'), Bid('NO_TRUMPS', '9'),
+			Bid('SPADES', '10'), Bid('CLUBS', '10'), Bid('DIAMONDS', '10'),
 			Bid('OPEN_MISERE'),
-			Bid('10', 'HEARTS'), Bid('10', 'NO_TRUMPS')
+			Bid('HEARTS', '10'), Bid('NO_TRUMPS', '10')
 		]
 
 		if not self in hierarchy:
@@ -148,36 +167,24 @@ class Bid:
 			return '='
 
 	def __gt__(self, other):
-		if other is None:   # any bid is bigger than no bid
-			return True
-
 		if not type(other) == Bid:
 			raise TypeError(f'\'>\' not supported between instances of \'Bid\' and \'{type(other)}\'')
 
 		return self._compare(other) == '>'
 
 	def __lt__(self, other):
-		if other is None:   # any bid is bigger than no bid
-			return False
-
 		if not type(other) == Bid:
 			raise TypeError(f'\'<\' not supported between instances of \'Bid\' and \'{type(other)}\'')
 
 		return self._compare(other) == '<'
 
 	def __ge__(self, other):
-		if other is None:   # any bid is bigger than no bid
-			return True
-
 		if not type(other) == Bid:
 			raise TypeError(f'\'>=\' not supported between instances of \'Bid\' and \'{type(other)}\'')
 
 		return self._compare(other) in { '>', '=' }
 
 	def __le__(self, other):
-		if other is None:   # any bid is bigger than no bid
-			return False
-
 		if not type(other) == Bid:
 			raise TypeError(f'\'<=\' not supported between instances of \'Bid\' and \'{type(other)}\'')
 
