@@ -1,6 +1,10 @@
 # five-hundred
 500 card game
 
+## Task tracking
+
+[Trello Board](https://trello.com/b/Ox0k6rDp/five-hundred)
+
 ## Normal game flow:
 * game = FiveHundredGame([ Player(player1_id, player1_name), Player(player2_id, player2_name), Player(player3_id, player3_name), Player(player4_id, player4_name) ])
 * loop until game complete:
