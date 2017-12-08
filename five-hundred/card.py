@@ -191,3 +191,43 @@ class Card:
 	def __hash__(self):
 		return int.from_bytes(self.to_minimal_string().encode(), 'little')
 		# https://stackoverflow.com/a/31702461/4809728
+
+	''' It is extremely worthy of note that this comparison, and therefore the gt/lt/ge/le functions,   '''
+	''' does not refer to the hierarchy of cards in actual gameplay, as the nuance of the trump suit    '''
+	''' and the need to follow suit make that entirely contextually dependent. The ordering implemented '''
+	''' here applies only to sorting the cards.                                                         '''
+	def _compare(self, op, other):
+		if not type(other) == Card:
+			raise TypeError(f'\'{op}\' not supported between instances of \'Card\' and \'{type(other)}\'')
+
+		left_suit = CardSuit.suits.index(self.suit.suit)
+		left_rank = CardRank.ranks.index(self.rank.rank) if hasattr(self, 'rank') else 0   # accounting for jokers
+		right_suit = CardSuit.suits.index(other.suit.suit)
+		right_rank = CardRank.ranks.index(other.rank.rank) if hasattr(other, 'rank') else 0
+
+		left = left_suit * 100 + left_rank
+		right = right_suit * 100 + right_rank
+
+		operator_map = {
+			'>': left > right,
+			'<': left < right,
+			'>=': left >= right,
+			'<=': left <= right
+		}
+
+		if not op in operator_map.keys():
+			raise ValueError(f'Unknown comparison operator: \'{op}\'')
+
+		return operator_map[op]
+
+	def __gt__(self, other):
+		return self._compare('>', other)
+
+	def __lt__(self, other):
+		return self._compare('<', other)
+
+	def __ge__(self, other):
+		return self._compare('>=', other)
+
+	def __le__(self, other):
+		return self._compare('<=', other)

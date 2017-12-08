@@ -426,3 +426,75 @@ class TestCardDunder:
 			assert not right == left
 			assert left != right
 			assert right != left
+
+	def test_gt_lt_ge_le(self):
+		less_than_cases = [
+			# suit-internal rank tests
+			[ Card('HEARTS', 'THREE'), Card('HEARTS', 'FOUR') ],
+			[ Card('HEARTS', 'FOUR'), Card('HEARTS', 'FIVE') ],
+			[ Card('HEARTS', 'THREE'), Card('HEARTS', 'FIVE') ],
+			[ Card('HEARTS', 'TWO'), Card('HEARTS', 'ACE') ],
+			[ Card('HEARTS', 'KING'), Card('HEARTS', 'ACE') ],
+			# suit tests
+			[ Card('CLUBS', 'ACE'), Card('DIAMONDS', 'TWO') ],
+			[ Card('DIAMONDS', 'ACE'), Card('HEARTS', 'TWO') ],
+			[ Card('HEARTS', 'ACE'), Card('SPADES', 'TWO') ],
+			[ Card('SPADES', 'ACE'), Card('JOKER') ]
+		]
+
+		equal_cases = [
+			[ Card('CLUBS', 'EIGHT'), Card('CLUBS', 'EIGHT') ],
+			[ Card('HEARTS', 'TWO'), Card('HEARTS', 'TWO') ],
+			[ Card('DIAMONDS', 'JACK'), Card('DIAMONDS', 'JACK') ],
+			[ Card('SPADES', 'TWO'), Card('SPADES', 'TWO') ],
+			[ Card('JOKER'), Card('JOKER') ]
+		]
+
+		error_cases = [
+			[ Card('SPADES', 'ACE'), CardSuit('SPADES') ],
+			[ Card('SPADES', 'ACE'), CardRank('NINE') ],
+			[ Card('SPADES', 'ACE'), 'HEARTS' ],
+			[ Card('SPADES', 'ACE'), 4 ],
+			[ Card('SPADES', 'ACE'), [] ],
+			[ Card('SPADES', 'ACE'), None ],
+			[ Card('SPADES', 'ACE'), True ],
+			[ Card('SPADES', 'ACE'), False ]
+		]
+
+		for test_case in less_than_cases:
+			left, right = test_case[0], test_case[1]
+			# left - right
+			assert left < right
+			assert left <= right
+			assert not left > right
+			assert not left >= right
+			# right - left
+			assert not right < left
+			assert not right <= left
+			assert right > left
+			assert right >= left
+
+		for test_case in equal_cases:
+			left, right = test_case[0], test_case[1]
+			# left - right
+			assert not left < right
+			assert left <= right
+			assert not left > right
+			assert left >= right
+			# right - left
+			assert not right < left
+			assert right <= left
+			assert not right > left
+			assert right >= left
+
+		for test_case in error_cases:
+			left, right = test_case[0], test_case[1]
+
+			with pytest.raises(TypeError):
+				left < right
+			with pytest.raises(TypeError):
+				left <= right
+			with pytest.raises(TypeError):
+				left > right
+			with pytest.raises(TypeError):
+				left >= right
