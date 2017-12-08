@@ -1,7 +1,7 @@
 import pytest
 
 from deck import Deck
-from card import Card
+from card import Card, CardSuit, CardRank
 
 class TestDeck:
 	def test_init(self):
@@ -69,7 +69,11 @@ class TestDeck:
 		assert deck.cards[:2] == [ Card('SPADES', 'TWO'), Card('DIAMONDS', 'FOUR') ]
 		assert len(deck.cards) == 44
 
-		# TODO: other types
+		invalid_inputs = [ CardSuit('HEARTS'), CardRank('JACK'), None, True, False, [], 'string!' ]
+
+		for input in invalid_inputs:
+			with pytest.raises(TypeError):
+				deck.prepend(input)
 
 	def test_append(self):
 		deck = Deck()
@@ -80,7 +84,11 @@ class TestDeck:
 		assert deck.cards[-2:] == [ Card('JOKER'), Card('SPADES', 'TWO') ]
 		assert len(deck.cards) == 44
 
-		# TODO: other tpyes
+		invalid_inputs = [ CardSuit('HEARTS'), CardRank('JACK'), None, True, False, [], 'string!' ]
+
+		for input in invalid_inputs:
+			with pytest.raises(TypeError):
+				deck.append(input)
 
 class TestDeckDunder:
 	def test_contains(self):

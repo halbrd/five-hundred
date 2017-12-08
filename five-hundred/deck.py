@@ -93,12 +93,7 @@ class Deck:
 
 		for suit in suits:
 			expected_suit_cards = sorted([ card for card in normal_deck if card.suit == suit ])
-			### for the above line to work, we need gt/lt/ge/le for CardRank
-			### then once that's implemented, write tests for it
-			# then once that's done, get this working
-			# then once that's done, get the tests for this finished
-			# then once that's done, complete the other TODOs
-			# then commit holy shit aaaaaaaaaaaaaaaaa
+
 			actual_suit_cards = [ card for card in expected_cards if card.suit == suit ]
 			actual_suit_cards_with_gaps = []
 
