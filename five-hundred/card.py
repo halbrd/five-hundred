@@ -1,7 +1,7 @@
 import bid
 
 class CardRank:
-	ranks = ['ACE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING']
+	ranks = ['TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'TEN', 'JACK', 'QUEEN', 'KING', 'ACE']
 
 	def __init__(self, rank):
 		if not type(rank) == str:
@@ -121,10 +121,11 @@ class Card:
 			return f'Card({self.suit.suit}, {self.rank.rank})'
 
 	def __eq__(self, other):
-		if self.is_joker():
-			return other.is_joker()
-		else:
-			return type(other) == Card and self.suit == other.suit and self.rank == other.rank
+		return type(other) == Card and hash(self) == hash(other)
 
 	def __ne__(self, other):
 		return not self.__eq__(other)
+
+	def __hash__(self):
+		return int.from_bytes(self.to_minimal_string().encode(), 'little')
+		# https://stackoverflow.com/a/31702461/4809728
