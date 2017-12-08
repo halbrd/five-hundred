@@ -444,8 +444,8 @@ class TestCardDunder:
 
 		equal_cases = [
 			[ Card('CLUBS', 'EIGHT'), Card('CLUBS', 'EIGHT') ],
-			[ Card('HEARTS', 'TWO'), Card('HEARTS', 'TWO') ],
 			[ Card('DIAMONDS', 'JACK'), Card('DIAMONDS', 'JACK') ],
+			[ Card('HEARTS', 'TWO'), Card('HEARTS', 'TWO') ],
 			[ Card('SPADES', 'TWO'), Card('SPADES', 'TWO') ],
 			[ Card('JOKER'), Card('JOKER') ]
 		]
