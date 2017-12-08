@@ -259,6 +259,56 @@ class TestCardSuitDunder:
 			assert left != right
 			assert right != left
 
+	def test_gt_lt_ge_le(self):
+		less_than_cases = [
+			[ CardSuit('CLUBS'), CardSuit('DIAMONDS') ],
+			[ CardSuit('DIAMONDS'), CardSuit('HEARTS') ],
+			[ CardSuit('HEARTS'), CardSuit('SPADES') ],
+			[ CardSuit('SPADES'), CardSuit('JOKER') ],
+			[ CardSuit('CLUBS'), CardSuit('HEARTS') ],
+			[ CardSuit('HEARTS'), CardSuit('JOKER') ]
+		]
+
+		equal_cases = [
+			[ CardSuit('CLUBS'), CardSuit('CLUBS') ],
+			[ CardSuit('JOKER'), CardSuit('JOKER') ]
+		]
+
+		error_cases = [
+			[ CardSuit('HEARTS'), 'HEARTS' ],
+			[ CardSuit('HEARTS'), 4 ],
+			[ CardSuit('HEARTS'), [] ],
+			[ CardSuit('HEARTS'), None ],
+			[ CardSuit('HEARTS'), True ],
+			[ CardSuit('HEARTS'), False ]
+		]
+
+		for test_case in less_than_cases:
+			left, right = test_case[0], test_case[1]
+			assert left < right
+			assert left <= right
+			assert not left > right
+			assert not left >= right
+
+		for test_case in equal_cases:
+			left, right = test_case[0], test_case[1]
+			assert not left < right
+			assert left <= right
+			assert not left > right
+			assert left >= right
+
+		for test_case in error_cases:
+			left, right = test_case[0], test_case[1]
+
+			with pytest.raises(TypeError):
+				left < right
+			with pytest.raises(TypeError):
+				left <= right
+			with pytest.raises(TypeError):
+				left > right
+			with pytest.raises(TypeError):
+				left >= right
+
 class TestCard:
 	def test_normal_inputs(self):
 		card = Card('HEARTS', 'FOUR')
