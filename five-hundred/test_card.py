@@ -88,6 +88,56 @@ class TestCardRankDunder:
 			assert left != right
 			assert right != left
 
+	def test_gt_lt_ge_le(self):
+		less_than_cases = [
+			[ CardRank('TWO'), CardRank('THREE') ],
+			[ CardRank('FOUR'), CardRank('ACE') ],
+			[ CardRank('TEN'), CardRank('JACK') ],
+			[ CardRank('EIGHT'), CardRank('JACK') ],
+			[ CardRank('KING'), CardRank('ACE') ],
+			[ CardRank('SIX'), CardRank('SEVEN') ]
+		]
+
+		equal_cases = [
+			[ CardRank('ACE'), CardRank('ACE') ],
+			[ CardRank('THREE'), CardRank('THREE') ],
+			[ CardRank('NINE'), CardRank('NINE') ]
+		]
+
+		error_cases = [
+			[ CardRank('FIVE'), 'FOUR' ],
+			[ CardRank('FIVE'), 4 ],
+			[ CardRank('FIVE'), [] ],
+			[ CardRank('FIVE'), None ],
+			[ CardRank('FIVE'), True ],
+			[ CardRank('FIVE'), False ]
+		]
+
+		for test_case in less_than_cases:
+			left, right = test_case[0], test_case[1]
+			assert left < right
+			assert left <= right
+			assert not left > right
+			assert not left >= right
+
+		for test_case in equal_cases:
+			left, right = test_case[0], test_case[1]
+			assert not left < right
+			assert left <= right
+			assert not left > right
+			assert left >= right
+
+		for test_case in error_cases:
+			left, right = test_case[0], test_case[1]
+
+			with pytest.raises(TypeError):
+				left < right
+			with pytest.raises(TypeError):
+				left <= right
+			with pytest.raises(TypeError):
+				left > right
+			with pytest.raises(TypeError):
+				left >= right
 
 
 class TestCardSuit:

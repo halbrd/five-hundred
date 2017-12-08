@@ -47,6 +47,37 @@ class CardRank:
 	def __ne__(self, other):
 		return not self.__eq__(other)
 
+	def _compare(self, op, other):
+		if not type(other) == CardRank:
+			raise TypeError(f'\'{op}\' not supported between instances of \'CardRank\' and \'{type(other)}\'')
+
+		left = CardRank.ranks.index(self.rank)
+		right = CardRank.ranks.index(other.rank)
+
+		operator_map = {
+			'>': left > right,
+			'<': left < right,
+			'>=': left >= right,
+			'<=': left <= right
+		}
+
+		if not op in operator_map.keys():
+			raise ValueError(f'Unknown comparison operator: \'{op}\'')
+
+		return operator_map[op]
+
+	def __gt__(self, other):
+		return self._compare('>', other)
+
+	def __lt__(self, other):
+		return self._compare('<', other)
+
+	def __ge__(self, other):
+		return self._compare('>=', other)
+
+	def __le__(self, other):
+		return self._compare('<=', other)
+
 class CardSuit:
 	suits = ['CLUBS', 'DIAMONDS', 'HEARTS', 'SPADES', 'JOKER']
 
