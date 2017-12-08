@@ -498,3 +498,12 @@ class TestCardDunder:
 				left > right
 			with pytest.raises(TypeError):
 				left >= right
+
+	def test_hash(self):
+		# generate every possible Card
+		cards = [ Card(suit, rank) for suit in filter(lambda suit: suit != 'JOKER', CardSuit.suits) for rank in CardRank.ranks ]
+		cards.append(Card('JOKER'))
+
+		# ensure that every hash result is unique
+		hashes = [ hash(card) for card in cards ]
+		assert len(hashes) == len(set(hashes))
