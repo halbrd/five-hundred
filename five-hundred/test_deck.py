@@ -122,7 +122,8 @@ class TestDeckDunder:
 
 		# Default Deck
 		deck = Deck()
-		assert repr(deck) == '''Deck( J-
+		assert repr(deck) == \
+'''Deck( J-
      5C 6C 7C 8C 9C TC JC QC KC AC
   4D 5D 6D 7D 8D 9D TD JD QD KD AD
   4H 5H 6H 7H 8H 9H TH JH QH KH AH
@@ -133,7 +134,8 @@ class TestDeckDunder:
 		del deck.cards[6]
 		del deck.cards[19]
 		del deck.cards[32]
-		assert repr(deck) == '''Deck( J-
+		assert repr(deck) == \
+'''Deck( J-
      5C    7C 8C 9C TC JC QC    AC
   4D 5D 6D 7D 8D 9D TD JD QD KD AD
   4H 5H 6H 7H 8H    TH JH QH KH AH
@@ -144,7 +146,8 @@ class TestDeckDunder:
 		deck.append(Card('CLUBS', 'EIGHT'))
 		deck.append(Card('HEARTS', 'JACK'))
 		deck.append(Card('JOKER'))
-		assert repr(deck) == '''Deck( J-
+		assert repr(deck) == \
+'''Deck( J-
      5C    7C 8C 9C TC JC QC    AC
   4D 5D 6D 7D 8D 9D TD JD QD KD AD
   4H 5H 6H 7H 8H    TH JH QH KH AH
@@ -155,7 +158,8 @@ class TestDeckDunder:
 		# replace an expected card and check that extra sorting works
 		deck.append(Card('CLUBS', 'SIX'))
 		deck.append(Card('CLUBS', 'TEN'))
-		assert repr(deck) == '''Deck( J-
+		assert repr(deck) == \
+'''Deck( J-
      5C 6C 7C 8C 9C TC JC QC    AC
   4D 5D 6D 7D 8D 9D TD JD QD KD AD
   4H 5H 6H 7H 8H    TH JH QH KH AH
@@ -168,7 +172,8 @@ class TestDeckDunder:
 		deck.append(Card('CLUBS', 'EIGHT'))
 		deck.append(Card('HEARTS', 'JACK'))
 		deck.append(Card('HEARTS', 'SEVEN'))
-		assert repr(deck) == '''Deck(
+		assert repr(deck) == \
+'''Deck(
               8C
 
            7H          JH
@@ -177,7 +182,8 @@ class TestDeckDunder:
 
 		deck.append(Card('CLUBS', 'NINE'))
 		deck.append(Card('JOKER'))
-		assert repr(deck) == '''Deck( J-
+		assert repr(deck) == \
+'''Deck( J-
               8C 9C
 
            7H          JH
