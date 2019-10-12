@@ -1,6 +1,7 @@
 from bid import Bid
 from card import Card
 from deck import Deck
+from kitty import Kitty
 
 from collections import OrderedDict
 
@@ -92,42 +93,45 @@ def check_hand_concluded(state=True):
 	return check
 
 class Hand:
-	def __init__(self, player_ids):
-		self.dealer_id = player_ids[0]
+	def __init__(self, player_ids, deal=True):
+		self.dealer_id = player_ids[-1]
 		self.deck = Deck()
-		self.hands = OrderedDict({ player_id: [] for player_id in player_ids[1:] + player_ids[0] })   # TODO: maybe convert this to a json.dump compatible format
+		self.deck.shuffle()
+		self.hands = OrderedDict({ player_id: [] for player_id in player_ids })
 		self.kitty = None
 		self.bids = []
 		self.tricks = []
 
-		self.deal()
+		if deal:
+			self.deal()
+
+	def __str__(self):
+		return 'Bids:' + ('\n  ' if len(self.bids) > 0 else '') \
+		+ '\n  '.join([str(bid) for bid in self.bids]) \
+		+ '\nTricks:' + ('\n  ' if len(self.tricks) > 0 else '') \
+		+ '\n  '.join([str(trick) for trick in self.tricks])
 
 	def deal(self):
-		self.deck.shuffle()
-
 		# Yeah, I know, there's no point following the dealing order. It just feels better this way.
 
-		for player_id, hand in self.hands:
+		for player_id, hand in self.hands.items():
 			for _ in range(3):
 				hand.append(self.deck.draw_card())
 
 		self.kitty = Kitty()
 		self.kitty.append(self.deck.draw_card())
 
-		for player_id, hand in self.hands:
+		for player_id, hand in self.hands.items():
 			for _ in range(4):
 				hand.append(self.deck.draw_card())
 
 		self.kitty.append(self.deck.draw_card())
 
-		for player_id, hand in self.hands:
+		for player_id, hand in self.hands.items():
 			for _ in range(3):
 				hand.append(self.deck.draw_card())
 
 		self.kitty.append(self.deck.draw_card())
-
-	def __str__(self):
-		return 'Bids:' + '\n  '.join([str(bid) for bid in self.bids]) + '\nTricks:' + '\n  '.join([str(trick) for trick in self.tricks])
 
 	def bidding_is_concluded(self):
 		# TODO: remove these notes when everthing is a-ok good to go
@@ -137,7 +141,7 @@ class Hand:
 		# hit bidding ceiling (10 no trumps)
 
 		enough_passes = len(self.bids) == 4 and self.bids.count(Bid('PASS')) >= 3
-		bid_ceiling = len(self.bids) > 0 and self.bids[-1] == Bid('10', 'NO_TRUMPS')
+		bid_ceiling = len(self.bids) > 0 and self.bids[-1] == Bid('NO_TRUMPS', '10')
 
 		return enough_passes or bid_ceiling
 
@@ -240,11 +244,13 @@ class Hand:
 			raise OutOfTurnError
 
 		# make sure new bid is higher than the last one
-		if not bid > self.last_normal_bid():
+		if not ( bid == Bid('PASS')
+		  or self.last_normal_bid() is None
+		  or bid > self.last_normal_bid() ):
 			raise ValueError('New Bid must be higher than previous bid')
 
 		# if the bid is misere, make sure that a 7 bid has been made
-		if bid == Bid('MISERE') and not self.last_normal_bid() >= Bid('SEVEN', 'SPADES'):
+		if bid == Bid('MISERE') and not self.last_normal_bid() >= Bid('SPADES', '7'):
 			raise ValueError('Misere cannot be bid until a 7 Bid has been made')
 
 		# the bid is valid
@@ -255,7 +261,7 @@ class Hand:
 			self.tricks.append(Trick(self.winning_bid().player_id))
 
 	@check_hand_concluded(state=False)
-	@check_bidding_concluded
+	@check_bidding_concluded(state=False)
 	def accept_card(self, card, player_id):
 		# TODO
 		# if hand concluded throw error
@@ -307,7 +313,7 @@ class Hand:
 
 				else:
 					# move the player_pointer around the circle 1 space
-					player_pointer = (player_pointer + i) % len(player_circle)
+					player_pointer = (player_pointer + 1) % len(player_circle)
 
 			return player_circle[player_pointer]
 
